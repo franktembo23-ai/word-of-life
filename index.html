@@ -6,6 +6,10 @@
 <title>Word of Life &mdash; Mountain of Salvation Ministries</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Firebase (compat build - works without a bundler, safest for older Android WebViews) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js" crossorigin="anonymous"></script>
 <style>
 :root{
   --ink:#0B1633;
@@ -279,6 +283,10 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
   border:1px solid rgba(154,166,204,0.3);color:#fff;border-radius:9px;padding:8px 12px;}
 
 .chip-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
+.sync-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle;background:#5C6A99;}
+.sync-dot.on{background:#1FAA59;box-shadow:0 0 0 3px rgba(31,170,89,0.2);}
+.sync-dot.off{background:#D0342C;box-shadow:0 0 0 3px rgba(208,52,44,0.2);}
+.sync-dot.connecting{background:#E8B23D;box-shadow:0 0 0 3px rgba(232,178,61,0.2);}
 .chip{
   font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;padding:6px 10px;border-radius:999px;
   background:rgba(255,255,255,0.05);border:1px solid rgba(154,166,204,0.25);color:var(--parchment);
@@ -340,6 +348,9 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
       <button class="btn btn-gold" id="exportPDF"><span class="ic">&#128196;</span>PDF</button>
       <button class="btn btn-gold" id="exportDOC"><span class="ic">&#128209;</span>DOCX</button>
       <button class="btn btn-gold" id="exportTXT"><span class="ic">&#128221;</span>TXT</button>
+    </div>
+    <div class="actions ui" style="grid-template-columns:1fr;">
+      <button class="btn btn-ghost" id="exportStandalone"><span class="ic">&#127760;</span>Generate Standalone HTML (Title, Scriptures &amp; Reading Plan)</button>
     </div>
   </div>
 
@@ -445,6 +456,16 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
       <div class="hint ui">Type the scripture yourself in each version from the Write tab &mdash; the app stores and displays whichever version you choose here. This keeps every translation accurate to your own Bible copy.</div>
     </div>
 
+    <div class="section-title ui">Cloud Sync</div>
+    <div class="card">
+      <div class="set-row">
+        <div>
+          <div class="lbl ui"><span id="syncDot" class="sync-dot connecting"></span> <span id="syncLabel">Connecting...</span></div>
+          <div class="sub ui">Devotionals you save here appear automatically on every device using this app.</div>
+        </div>
+      </div>
+    </div>
+
     <div class="section-title ui">Data</div>
     <div class="card">
       <div class="set-row">
@@ -473,6 +494,16 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
 <script>
 window.addEventListener('error', function(e){
   try{
+    var msg = e && e.message ? e.message : '';
+    var hasLocation = e && (e.lineno || e.filename);
+    /* Cross-origin scripts (e.g. the Firebase CDN) report only the generic
+       "Script error." with no line/file info by browser design - it's not
+       actionable and does not mean this app's own code broke, so it's
+       logged quietly instead of alarming the user with a red banner. */
+    if(!hasLocation && (msg === 'Script error.' || msg === 'Script error' || msg === '')){
+      if(window.console && console.warn) console.warn('Cross-origin script error (no detail available):', e);
+      return;
+    }
     var b = document.getElementById('bootError');
     if(!b){
       b = document.createElement('div');
@@ -480,7 +511,7 @@ window.addEventListener('error', function(e){
       b.style.cssText = 'position:fixed;left:8px;right:8px;top:8px;z-index:9999;background:#D0342C;color:#fff;font-family:sans-serif;font-size:12px;padding:10px 12px;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.4);';
       document.body.appendChild(b);
     }
-    b.textContent = 'App error: ' + (e && e.message ? e.message : 'unknown error') + ' (line ' + (e && e.lineno) + ')';
+    b.textContent = 'App error: ' + (msg || 'unknown error') + ' (line ' + (e && e.lineno) + ')';
   }catch(ignored){}
 });
 (function(){
@@ -552,6 +583,134 @@ function saveSettings(s){ safeStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); 
 var ENTRIES = loadEntries();
 var SETTINGS = loadSettings();
 
+/* ---------------- Cloud sync (Firebase Realtime Database) ----------------
+   Goal: type a devotional once, and it appears automatically on every
+   device running this app - without needing to touch each phone/PC.
+   Everything still works fully offline: if Firebase can't load or the
+   device has no internet, the app falls back to the local safeStorage
+   copy exactly as before, and nothing else in the app changes. */
+var firebaseConfig = {
+  apiKey: "AIzaSyDiRtkhnX3VQTOKzPirZYD7MRc2SzrzghY",
+  authDomain: "word-of-life-msm.firebaseapp.com",
+  databaseURL: "https://word-of-life-msm-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "word-of-life-msm",
+  storageBucket: "word-of-life-msm.firebasestorage.app",
+  messagingSenderId: "834051319181",
+  appId: "1:834051319181:web:3f01ca61e31d6e1bc949c4",
+  measurementId: "G-T9THL2CQB8"
+};
+
+var cloudReady = false;
+var entriesRef = null;
+var settingsRef = null;
+var suppressNextEntriesPush = false;
+var suppressNextSettingsPush = false;
+
+function setSyncStatus(state, label){
+  try{
+    var dot = document.getElementById('syncDot');
+    var txt = document.getElementById('syncLabel');
+    if(dot){ dot.className = 'sync-dot ' + state; }
+    if(txt){ txt.textContent = label; }
+  }catch(ignored){}
+}
+
+function initCloudSync(){
+  if(typeof firebase === 'undefined'){ setSyncStatus('off','Offline (Firebase did not load)'); return; }
+  try{
+    firebase.initializeApp(firebaseConfig);
+    setSyncStatus('connecting','Connecting...');
+
+    if(typeof firebase.auth === 'function'){
+      firebase.auth().onAuthStateChanged(function(user){
+        if(user){ startDbSync(); }
+      });
+      firebase.auth().signInAnonymously().catch(function(){
+        // Auth unavailable (e.g. Anonymous sign-in not enabled yet) - still try
+        // the database read-only, since .read rules may allow it without auth.
+        startDbSync();
+      });
+    } else {
+      startDbSync();
+    }
+  }catch(e){ setSyncStatus('off','Offline (sync unavailable)'); }
+}
+
+var dbSyncStarted = false;
+function startDbSync(){
+  if(dbSyncStarted) return; // onAuthStateChanged + the signIn .catch() can both fire; only wire up once
+  dbSyncStarted = true;
+  try{
+    var db = firebase.database();
+    entriesRef = db.ref('devotionals');
+    settingsRef = db.ref('settings');
+    cloudReady = true;
+
+    entriesRef.once('value').then(function(snap){
+      if(snap.exists() && snap.val()){
+        ENTRIES = snap.val();
+        saveEntries(ENTRIES);
+      } else {
+        entriesRef.set(ENTRIES); // first device online seeds the cloud
+      }
+      entriesRef.on('value', function(liveSnap){
+        var remote = liveSnap.val();
+        if(!remote) return;
+        ENTRIES = remote;
+        saveEntries(ENTRIES);
+        if(typeof renderToday === 'function') renderToday();
+        if(typeof renderBrowse === 'function' && document.getElementById('view-browse').classList.contains('active')) renderBrowse();
+      });
+      setSyncStatus('on','Connected \u2014 syncing automatically');
+    }).catch(function(){ setSyncStatus('off','Offline (using this device\u2019s saved copy)'); });
+
+    settingsRef.once('value').then(function(snap){
+      if(snap.exists() && snap.val()){
+        var remoteS = snap.val();
+        for(var k in remoteS){ SETTINGS[k] = remoteS[k]; }
+        saveSettings(SETTINGS);
+        try{
+          document.getElementById('topLogo').src = SETTINGS.logo;
+          document.getElementById('topMinistryName').textContent = SETTINGS.ministry;
+        }catch(ignored){}
+      } else {
+        settingsRef.set(SETTINGS);
+      }
+      settingsRef.on('value', function(liveSnap){
+        var remote = liveSnap.val();
+        if(!remote) return;
+        for(var k in remote){ SETTINGS[k] = remote[k]; }
+        saveSettings(SETTINGS);
+        try{
+          document.getElementById('topLogo').src = SETTINGS.logo;
+          document.getElementById('topMinistryName').textContent = SETTINGS.ministry;
+          if(typeof renderToday === 'function') renderToday();
+          if(typeof renderSettings === 'function' && document.getElementById('view-settings').classList.contains('active')) renderSettings();
+        }catch(ignored){}
+      });
+    }).catch(function(){});
+
+    db.ref('.info/connected').on('value', function(snap){
+      if(snap.val() === true) setSyncStatus('on','Connected \u2014 syncing automatically');
+      else setSyncStatus('off','Offline (using this device\u2019s saved copy)');
+    });
+  }catch(e){ setSyncStatus('off','Offline (sync unavailable)'); }
+}
+
+function pushEntryToCloud(dateISO, entryObj){
+  if(!cloudReady || !entriesRef) return;
+  try{ entriesRef.child(dateISO).set(entryObj); }catch(ignored){}
+}
+function removeEntryFromCloud(dateISO){
+  if(!cloudReady || !entriesRef) return;
+  try{ entriesRef.child(dateISO).remove(); }catch(ignored){}
+}
+function pushSettingsToCloud(){
+  if(!cloudReady || !settingsRef) return;
+  try{ settingsRef.set(SETTINGS); }catch(ignored){}
+}
+
+
 /* ---------------- Date helpers ---------------- */
 var WEEKDAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -566,6 +725,7 @@ function ordinal(n){
   return n + (s[(v-20)%10] || s[v] || s[0]);
 }
 function isoToParts(iso){
+  if(!iso || typeof iso !== 'string' || iso.split("-").length !== 3){ iso = todayISO(); }
   var p = iso.split("-");
   var d = new Date(parseInt(p[0],10), parseInt(p[1],10)-1, parseInt(p[2],10));
   return { weekday: WEEKDAYS[d.getDay()], day: parseInt(p[2],10), month: MONTHS[parseInt(p[1],10)-1], year: p[0], dateObj:d };
@@ -584,6 +744,7 @@ function sortedDates(){
 
 /* current viewing date for Today view */
 var currentDate = ENTRIES[todayISO()] ? todayISO() : (sortedDates().length ? nearestDate() : todayISO());
+var isPinnedToToday = true; /* while true, the view auto-advances at midnight */
 
 function nearestDate(){
   var keys = sortedDates();
@@ -670,8 +831,14 @@ function escapeHTML(s){
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+function getEntry(dateISO){
+  var e = ENTRIES[dateISO];
+  if(e && !e.date){ e.date = dateISO; } // heal older/imported entries missing their own date field
+  return e;
+}
+
 function renderToday(){
-  var entry = ENTRIES[currentDate];
+  var entry = getEntry(currentDate);
   var card = document.getElementById('entryCardInner');
   if(!entry){
     card.innerHTML = '<div class="empty-state">No devotional saved for '+fmtLong(currentDate)+' yet.<br><br>Go to <b>Write</b> to create one.</div>';
@@ -687,15 +854,23 @@ function renderToday(){
 
 document.getElementById('prevBtn').addEventListener('click', function(){
   var keys = sortedDates(); var idx = keys.indexOf(currentDate);
-  if(idx > 0){ currentDate = keys[idx-1]; renderToday(); }
+  if(idx > 0){ currentDate = keys[idx-1]; isPinnedToToday = false; renderToday(); }
 });
 document.getElementById('nextBtn').addEventListener('click', function(){
   var keys = sortedDates(); var idx = keys.indexOf(currentDate);
-  if(idx !== -1 && idx < keys.length-1){ currentDate = keys[idx+1]; renderToday(); }
+  if(idx !== -1 && idx < keys.length-1){ currentDate = keys[idx+1]; isPinnedToToday = false; renderToday(); }
 });
 document.getElementById('todayBtn').addEventListener('click', function(){
-  currentDate = todayISO(); renderToday();
+  currentDate = todayISO(); isPinnedToToday = true; renderToday();
 });
+
+/* Auto-advance to the new date at midnight without needing a manual reload */
+setInterval(function(){
+  if(isPinnedToToday && currentDate !== todayISO()){
+    currentDate = todayISO();
+    renderToday();
+  }
+}, 60000);
 
 /* ---------------- Browse view ---------------- */
 function renderBrowse(){
@@ -720,6 +895,7 @@ function renderBrowse(){
   for(var r=0;r<rows.length;r++){
     rows[r].addEventListener('click', function(){
       currentDate = this.getAttribute('data-date');
+      isPinnedToToday = (currentDate === todayISO());
       renderToday();
       goTab('today');
     });
@@ -842,9 +1018,10 @@ document.getElementById('saveEntry').addEventListener('click', function(){
     declarations: cleanDecls,
     readingPlan: document.getElementById('f_plan').value.trim()
   };
-  if(editingDate && editingDate !== dateISO){ delete ENTRIES[editingDate]; }
+  if(editingDate && editingDate !== dateISO){ delete ENTRIES[editingDate]; removeEntryFromCloud(editingDate); }
   ENTRIES[dateISO] = entry;
   saveEntries(ENTRIES);
+  pushEntryToCloud(dateISO, entry);
   editingDate = dateISO;
   currentDate = dateISO;
   toast("Devotional saved");
@@ -858,6 +1035,7 @@ document.getElementById('deleteEntry').addEventListener('click', function(){
   if(!confirm("Delete the devotional for " + fmtLong(editingDate) + "?")) return;
   delete ENTRIES[editingDate];
   saveEntries(ENTRIES);
+  removeEntryFromCloud(editingDate);
   toast("Deleted");
   resetForm(todayISO());
   if(currentDate === editingDate) currentDate = sortedDates().length ? nearestDate() : todayISO();
@@ -944,6 +1122,7 @@ function renderVersionChips(){
       SETTINGS.versions = SETTINGS.versions.filter(function(x){ return x !== v; });
       if(SETTINGS.defaultVersion === v) SETTINGS.defaultVersion = SETTINGS.versions[0];
       saveSettings(SETTINGS);
+      pushSettingsToCloud();
       renderSettings();
     });
   }
@@ -952,17 +1131,18 @@ document.getElementById('addVersionBtn').addEventListener('click', function(){
   var inp = document.getElementById('newVersionInput');
   var v = inp.value.trim().toUpperCase();
   if(!v) return;
-  if(SETTINGS.versions.indexOf(v) === -1){ SETTINGS.versions.push(v); saveSettings(SETTINGS); renderSettings(); }
+  if(SETTINGS.versions.indexOf(v) === -1){ SETTINGS.versions.push(v); saveSettings(SETTINGS); pushSettingsToCloud(); renderSettings(); }
   inp.value = "";
 });
 document.getElementById('set_defaultVersion').addEventListener('change', function(){
-  SETTINGS.defaultVersion = this.value; saveSettings(SETTINGS); renderToday();
+  SETTINGS.defaultVersion = this.value; saveSettings(SETTINGS); pushSettingsToCloud(); renderToday();
 });
 ['set_ministry','set_series','set_pastor','set_prayerline'].forEach(function(id){
   document.getElementById(id).addEventListener('input', function(){
     var map = {set_ministry:'ministry', set_series:'series', set_pastor:'pastor', set_prayerline:'prayerline'};
     SETTINGS[map[this.id]] = this.value;
     saveSettings(SETTINGS);
+    pushSettingsToCloud();
     document.getElementById('topMinistryName').textContent = SETTINGS.ministry;
     renderToday();
   });
@@ -977,7 +1157,7 @@ document.getElementById('logoBtn').addEventListener('click', function(){ documen
 document.getElementById('logoFile').addEventListener('change', function(e){
   if(!e.target.files[0]) return;
   fileToDataURL(e.target.files[0], function(url){
-    SETTINGS.logo = url; saveSettings(SETTINGS); renderSettings();
+    SETTINGS.logo = url; saveSettings(SETTINGS); pushSettingsToCloud(); renderSettings();
     document.getElementById('topLogo').src = url;
     toast("Logo updated");
   });
@@ -986,7 +1166,7 @@ document.getElementById('photoBtn').addEventListener('click', function(){ docume
 document.getElementById('photoFile').addEventListener('change', function(e){
   if(!e.target.files[0]) return;
   fileToDataURL(e.target.files[0], function(url){
-    SETTINGS.photo = url; saveSettings(SETTINGS); renderSettings();
+    SETTINGS.photo = url; saveSettings(SETTINGS); pushSettingsToCloud(); renderSettings();
     renderToday();
     toast("Photo updated");
   });
@@ -1003,8 +1183,8 @@ document.getElementById('restoreFile').addEventListener('change', function(e){
   reader.onload = function(ev){
     try{
       var data = JSON.parse(ev.target.result);
-      if(data.entries){ ENTRIES = data.entries; saveEntries(ENTRIES); }
-      if(data.settings){ SETTINGS = data.settings; saveSettings(SETTINGS); }
+      if(data.entries){ ENTRIES = data.entries; saveEntries(ENTRIES); if(cloudReady && entriesRef){ entriesRef.set(ENTRIES); } }
+      if(data.settings){ SETTINGS = data.settings; saveSettings(SETTINGS); pushSettingsToCloud(); }
       toast("Backup restored");
       renderSettings(); renderToday(); renderBrowse();
       document.getElementById('topLogo').src = SETTINGS.logo;
@@ -1041,7 +1221,7 @@ function buildShareText(entry){
 }
 
 function currentEntryOrWarn(){
-  var e = ENTRIES[currentDate];
+  var e = getEntry(currentDate);
   if(!e){ toast("No devotional to share for this date yet"); return null; }
   return e;
 }
@@ -1136,12 +1316,110 @@ function plainEntryForPrint(entry){
   return html;
 }
 
+/* ---------------- Standalone single-devotion HTML export ----------------
+   Self-contained file (own doctype, no external CDN/font dependency) so it
+   opens correctly offline / inside an Android WebView. Shows: title of the
+   message, the scripture(s) for the message, and the Bible study plan
+   scriptures, with a simple version switcher if more than one translation
+   was entered. */
+function buildStandaloneHTML(entry){
+  var parts = isoToParts(entry.date);
+  var versionKeys = [];
+  var vObj = entry.versions || {};
+  for(var k in vObj){ if(vObj[k]) versionKeys.push(k); }
+  if(versionKeys.length === 0) versionKeys.push(entry.primaryVersion || SETTINGS.defaultVersion || "NKJV");
+  var startV = (vObj[SETTINGS.defaultVersion]) ? SETTINGS.defaultVersion :
+               (entry.primaryVersion && vObj[entry.primaryVersion]) ? entry.primaryVersion : versionKeys[0];
+
+  var chipsHTML = "";
+  var panelsHTML = "";
+  for(var i=0;i<versionKeys.length;i++){
+    var v = versionKeys[i];
+    var isActive = (v === startV);
+    chipsHTML += '<button class="vbtn'+(isActive?' active':'')+'" data-v="'+escapeHTML(v)+'" onclick="wolShowVersion(this)">'+escapeHTML(v)+'</button>';
+    panelsHTML += '<div class="vpanel" data-v="'+escapeHTML(v)+'" style="display:'+(isActive?'block':'none')+';">'+escapeHTML(vObj[v]||"")+'</div>';
+  }
+
+  var html = "";
+  html += "<!DOCTYPE html>\n<html lang='en'><head><meta charset='UTF-8'>";
+  html += "<meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+  html += "<title>"+escapeHTML(entry.focus||"Word of Life")+" \u2014 "+fmtLong(entry.date)+"</title>";
+  html += "<style>";
+  html += "*{box-sizing:border-box;}body{margin:0;padding:24px 16px 50px;background:#0B1633;color:#F7F2E7;";
+  html += "font-family:Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased;}";
+  html += ".wrap{max-width:600px;margin:0 auto;}";
+  html += ".hdr{text-align:center;margin-bottom:22px;}";
+  html += ".hdr img{width:64px;height:64px;border-radius:50%;border:2px solid #E8B23D;object-fit:cover;}";
+  html += ".hdr .min{font-family:Arial,sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#F4D27A;margin-top:10px;font-weight:bold;}";
+  html += ".hdr .ser{font-family:Arial,sans-serif;font-size:12.5px;color:#9AA6CC;margin-top:2px;}";
+  html += ".datebar{text-align:center;font-family:Arial,sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#9AA6CC;margin:18px 0 4px;}";
+  html += ".datebig{text-align:center;font-size:22px;font-weight:bold;color:#fff;margin-bottom:20px;}";
+  html += ".card{background:rgba(255,255,255,0.04);border:1px solid rgba(154,166,204,0.25);border-radius:16px;padding:22px 18px;margin-bottom:16px;}";
+  html += ".ttl-label{font-family:Arial,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#E8B23D;font-weight:bold;margin-bottom:6px;}";
+  html += ".ttl{font-size:26px;font-weight:bold;color:#fff;margin:0 0 4px;}";
+  html += ".ref{font-family:Arial,sans-serif;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:#E8B23D;font-weight:bold;margin-top:14px;}";
+  html += ".vbtns{margin:10px 0 8px;}";
+  html += ".vbtn{font-family:Arial,sans-serif;font-size:11px;font-weight:bold;letter-spacing:.04em;padding:5px 10px;border-radius:999px;border:1px solid rgba(154,166,204,0.35);background:rgba(255,255,255,0.05);color:#9AA6CC;margin:0 6px 6px 0;cursor:pointer;}";
+  html += ".vbtn.active{background:#E8B23D;color:#0B1633;border-color:transparent;}";
+  html += ".vpanel{border-left:3px solid #E8B23D;padding:2px 0 2px 14px;font-size:17px;line-height:1.65;font-style:italic;}";
+  html += ".plan{font-family:Arial,sans-serif;font-size:13.5px;color:#9AA6CC;background:rgba(255,255,255,0.04);border:1px solid rgba(154,166,204,0.2);border-radius:12px;padding:12px 14px;margin-top:6px;}";
+  html += ".plan b{color:#F7F2E7;}";
+  html += ".ftr{text-align:center;font-family:Arial,sans-serif;font-size:11.5px;color:#5C6A99;margin-top:26px;line-height:1.6;}";
+  html += "</style></head><body><div class='wrap'>";
+
+  html += "<div class='hdr'><img src='"+SETTINGS.logo+"' alt='logo'>";
+  html += "<div class='min'>"+escapeHTML(SETTINGS.ministry)+"</div>";
+  html += "<div class='ser'>"+escapeHTML(SETTINGS.series)+"</div></div>";
+
+  html += "<div class='datebar'>"+escapeHTML(parts.weekday)+"</div>";
+  html += "<div class='datebig'>"+ordinal(parts.day)+" "+escapeHTML(parts.month)+" "+parts.year+"</div>";
+
+  html += "<div class='card'>";
+  html += "<div class='ttl-label'>Title of the Message</div>";
+  html += "<div class='ttl'>"+escapeHTML(entry.focus||"")+"</div>";
+
+  html += "<div class='ref'>Scripture &middot; "+escapeHTML(entry.scriptureRef||"")+"</div>";
+  if(versionKeys.length > 1){ html += "<div class='vbtns'>"+chipsHTML+"</div>"; }
+  html += panelsHTML;
+  html += "</div>";
+
+  if(entry.readingPlan){
+    html += "<div class='card'>";
+    html += "<div class='ttl-label'>Bible Study Plan</div>";
+    html += "<div class='plan'>"+escapeHTML(entry.readingPlan)+"</div>";
+    html += "</div>";
+  }
+
+  html += "<div class='ftr'>"+escapeHTML(SETTINGS.pastor)+" &middot; Prayer Line "+escapeHTML(SETTINGS.prayerline)+"</div>";
+  html += "</div>";
+
+  html += "<script>function wolShowVersion(btn){";
+  html += "var v=btn.getAttribute('data-v');";
+  html += "var btns=document.getElementsByClassName('vbtn');";
+  html += "for(var i=0;i<btns.length;i++){btns[i].className='vbtn'+(btns[i].getAttribute('data-v')===v?' active':'');}";
+  html += "var panels=document.getElementsByClassName('vpanel');";
+  html += "for(var j=0;j<panels.length;j++){panels[j].style.display=(panels[j].getAttribute('data-v')===v)?'block':'none';}";
+  html += "}<\/script>";
+
+  html += "</body></html>";
+  return html;
+}
+
+document.getElementById('exportStandalone').addEventListener('click', function(){
+  var e = currentEntryOrWarn(); if(!e) return;
+  var html = buildStandaloneHTML(e);
+  downloadBlob(html, "word-of-life-" + e.date + "-standalone.html", "text/html");
+  toast("Standalone devotional HTML generated");
+});
+
+
 /* ---------------- Init ---------------- */
 try{
   document.getElementById('topLogo').src = SETTINGS.logo;
   document.getElementById('topMinistryName').textContent = SETTINGS.ministry;
   resetForm(todayISO());
   renderToday();
+  initCloudSync();
   if(!storageWorks){
     toast("Storage is restricted here \u2014 open the downloaded file in your browser or app to save changes permanently.");
   }
