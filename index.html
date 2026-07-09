@@ -145,6 +145,20 @@ button{font-family:inherit;cursor:pointer;}
 }
 .body-msg{font-size:16px;line-height:1.75;color:var(--parchment-dim);margin-bottom:18px;white-space:pre-wrap;}
 
+.prayer-head{
+  font-family:'Inter',sans-serif;font-weight:700;font-size:13px;letter-spacing:.04em;
+  color:var(--gold);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px;
+}
+.prayer-list{list-style:none;margin:0 0 18px;padding:0;}
+.prayer-list li{
+  position:relative;padding:8px 0 8px 26px;font-size:15px;line-height:1.5;
+  border-top:1px solid rgba(232,178,61,0.16);color:var(--parchment);
+}
+.prayer-list li:first-child{border-top:none;}
+.prayer-list li::before{
+  content:"\2022";position:absolute;left:2px;top:6px;font-size:20px;color:var(--gold);line-height:1;
+}
+
 .declare-head{
   font-family:'Inter',sans-serif;font-weight:700;font-size:13px;letter-spacing:.04em;
   color:var(--red);text-transform:uppercase;margin-bottom:8px;
@@ -384,6 +398,11 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
         <input type="file" id="f_docxImport" accept=".docx" style="display:none;">
         <button class="file-btn ui" id="f_docxBtn">&#128193; Import from .docx</button>
       </div>
+
+      <label class="ui">Prayer Points</label>
+      <div id="f_prayerList"></div>
+      <button class="file-btn ui" id="f_addPrayer" style="margin-top:4px;">&#43; Add prayer point</button>
+      <div class="hint ui">Optional &mdash; specific points to pray over, shown right after the message.</div>
 
       <label class="ui" id="f_declareHeadLbl">Declaration Heading</label>
       <input type="text" id="f_declareHead" placeholder="e.g. Speak Light Now!!!">
@@ -822,6 +841,14 @@ function renderEntryHTML(entry, forExport){
     html += '<blockquote class="scripture-text">&ldquo;'+escapeHTML(vt.text)+'&rdquo;<br><span class="version-pill">'+escapeHTML(vt.v)+'</span></blockquote>';
   }
   html += '<div class="body-msg">'+escapeHTML(entry.body||"")+'</div>';
+  if(entry.prayerPoints && entry.prayerPoints.length){
+    html += '<div class="prayer-head">Prayer Points</div>';
+    html += '<ul class="prayer-list">';
+    for(var pi=0;pi<entry.prayerPoints.length;pi++){
+      if(entry.prayerPoints[pi]) html += '<li>'+escapeHTML(entry.prayerPoints[pi])+'</li>';
+    }
+    html += '</ul>';
+  }
   if(entry.declarations && entry.declarations.length){
     html += '<div class="declare-head">'+escapeHTML(entry.declareHeading || "Declare This Now")+'</div>';
     html += '<ol class="declare-list">';
@@ -918,11 +945,13 @@ var editingDate = null; // null = new entry
 var currentVersionTab = SETTINGS.defaultVersion;
 var draftVersions = {};
 var draftDecls = [];
+var draftPrayerPoints = [];
 
 function resetForm(dateISO){
   editingDate = null;
   draftVersions = {};
   draftDecls = [""];
+  draftPrayerPoints = [""];
   document.getElementById('f_date').value = dateISO || todayISO();
   document.getElementById('f_focus').value = "";
   document.getElementById('f_ref').value = "";
@@ -935,6 +964,7 @@ function resetForm(dateISO){
   currentVersionTab = SETTINGS.defaultVersion;
   renderVersionTabs();
   renderDeclEditor();
+  renderPrayerEditor();
   document.getElementById('writeHint').textContent = "";
 }
 
@@ -945,6 +975,7 @@ function loadEntryIntoForm(dateISO){
   draftVersions = {};
   for(var k in (e.versions||{})) draftVersions[k] = e.versions[k];
   draftDecls = (e.declarations && e.declarations.length) ? e.declarations.slice() : [""];
+  draftPrayerPoints = (e.prayerPoints && e.prayerPoints.length) ? e.prayerPoints.slice() : [""];
   document.getElementById('f_date').value = dateISO;
   document.getElementById('f_focus').value = e.focus || "";
   document.getElementById('f_ref').value = e.scriptureRef || "";
@@ -957,6 +988,7 @@ function loadEntryIntoForm(dateISO){
   renderVersionTabs();
   document.getElementById('f_verseText').value = draftVersions[currentVersionTab] || "";
   renderDeclEditor();
+  renderPrayerEditor();
   document.getElementById('writeHint').textContent = "";
 }
 
@@ -1012,12 +1044,45 @@ document.getElementById('f_addDecl').addEventListener('click', function(){
   renderDeclEditor();
 });
 
+function renderPrayerEditor(){
+  var wrap = document.getElementById('f_prayerList');
+  wrap.innerHTML = "";
+  for(var i=0;i<draftPrayerPoints.length;i++){
+    var row = document.createElement('div');
+    row.className = 'decl-edit-row';
+    var inp = document.createElement('input');
+    inp.type = 'text';
+    inp.value = draftPrayerPoints[i];
+    inp.placeholder = 'Pray for ...';
+    inp.setAttribute('data-idx', i);
+    inp.addEventListener('input', function(){
+      draftPrayerPoints[parseInt(this.getAttribute('data-idx'),10)] = this.value;
+    });
+    var rm = document.createElement('button');
+    rm.className = 'icon-btn'; rm.innerHTML = '&times;'; rm.type='button';
+    rm.addEventListener('click', function(){
+      var idx = parseInt(this.parentNode.querySelector('input').getAttribute('data-idx'),10);
+      draftPrayerPoints.splice(idx,1);
+      if(draftPrayerPoints.length===0) draftPrayerPoints=[""];
+      renderPrayerEditor();
+    });
+    row.appendChild(inp); row.appendChild(rm);
+    wrap.appendChild(row);
+  }
+}
+document.getElementById('f_addPrayer').addEventListener('click', function(){
+  draftPrayerPoints.push("");
+  renderPrayerEditor();
+});
+
 document.getElementById('saveEntry').addEventListener('click', function(){
   draftVersions[currentVersionTab] = document.getElementById('f_verseText').value;
   var dateISO = document.getElementById('f_date').value;
   if(!dateISO){ toast("Please choose a date"); return; }
   var cleanDecls = [];
   for(var i=0;i<draftDecls.length;i++){ if(draftDecls[i] && draftDecls[i].trim()) cleanDecls.push(draftDecls[i].trim()); }
+  var cleanPrayerPoints = [];
+  for(var pj=0;pj<draftPrayerPoints.length;pj++){ if(draftPrayerPoints[pj] && draftPrayerPoints[pj].trim()) cleanPrayerPoints.push(draftPrayerPoints[pj].trim()); }
   var bodyVal = document.getElementById('f_body').value;
   var hasAnyVerseText = false;
   for(var vk in draftVersions){ if(draftVersions[vk] && draftVersions[vk].trim()){ hasAnyVerseText = true; break; } }
@@ -1038,6 +1103,7 @@ document.getElementById('saveEntry').addEventListener('click', function(){
     primaryVersion: currentVersionTab,
     versions: draftVersions,
     body: bodyVal,
+    prayerPoints: cleanPrayerPoints,
     declareHeading: document.getElementById('f_declareHead').value.trim(),
     declarations: cleanDecls,
     readingPlan: document.getElementById('f_plan').value.trim()
@@ -1254,6 +1320,11 @@ function buildShareText(entry){
   if(vt.text) lines.push(entry.scriptureRef + " (" + vt.v + ")\n" + vt.text);
   lines.push("");
   lines.push(entry.body||"");
+  if(entry.prayerPoints && entry.prayerPoints.length){
+    lines.push("");
+    lines.push("Prayer Points");
+    for(var pi=0;pi<entry.prayerPoints.length;pi++){ if(entry.prayerPoints[pi]) lines.push("\u2022 "+entry.prayerPoints[pi]); }
+  }
   if(entry.declarations && entry.declarations.length){
     lines.push("");
     lines.push(entry.declareHeading || "Declare This Now");
@@ -1352,6 +1423,11 @@ function plainEntryForPrint(entry){
   html += "<p style='text-align:center;'><b>"+escapeHTML(entry.scriptureRef||"")+"</b></p>";
   if(vt.text) html += "<blockquote style='border-left:3px solid #999;padding-left:12px;font-style:italic;'>"+escapeHTML(vt.text)+" ("+escapeHTML(vt.v)+")</blockquote>";
   html += "<p>"+escapeHTML(entry.body||"").replace(/\n/g,"<br>")+"</p>";
+  if(entry.prayerPoints && entry.prayerPoints.length){
+    html += "<p><b>Prayer Points</b></p><ul>";
+    for(var pi=0;pi<entry.prayerPoints.length;pi++){ if(entry.prayerPoints[pi]) html += "<li>"+escapeHTML(entry.prayerPoints[pi])+"</li>"; }
+    html += "</ul>";
+  }
   if(entry.declarations && entry.declarations.length){
     html += "<p><b>"+escapeHTML(entry.declareHeading||"")+"</b></p><ol>";
     for(var i=0;i<entry.declarations.length;i++){ html += "<li>"+escapeHTML(entry.declarations[i])+"</li>"; }
