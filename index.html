@@ -149,14 +149,29 @@ button{font-family:inherit;cursor:pointer;}
   font-family:'Inter',sans-serif;font-weight:700;font-size:13px;letter-spacing:.04em;
   color:var(--gold);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px;
 }
-.prayer-list{list-style:none;margin:0 0 18px;padding:0;}
+.prayer-list{list-style:none;margin:0 0 18px;padding:0;counter-reset:pray;}
 .prayer-list li{
-  position:relative;padding:8px 0 8px 26px;font-size:15px;line-height:1.5;
+  counter-increment:pray;position:relative;padding:8px 0 8px 34px;font-size:15px;line-height:1.5;
   border-top:1px solid rgba(232,178,61,0.16);color:var(--parchment);
 }
 .prayer-list li:first-child{border-top:none;}
 .prayer-list li::before{
-  content:"\2022";position:absolute;left:2px;top:6px;font-size:20px;color:var(--gold);line-height:1;
+  content:counter(pray);position:absolute;left:0;top:9px;
+  width:22px;height:22px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold-2),var(--gold));
+  color:var(--ink);font-family:'Inter',sans-serif;font-weight:800;font-size:11px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+.confession-head{
+  font-family:'Inter',sans-serif;font-weight:700;font-size:13px;letter-spacing:.04em;
+  color:var(--gold-2);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px;
+}
+.confession-box{
+  background:rgba(232,178,61,0.07);border:1px solid rgba(232,178,61,0.22);
+  border-left:3px solid var(--gold);
+  border-radius:12px;padding:14px 16px;margin:0 0 18px;
+  font-size:16px;line-height:1.7;color:var(--parchment);white-space:pre-wrap;
 }
 
 .declare-head{
@@ -319,6 +334,41 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
 }
 .chip .x{color:var(--red);font-weight:800;cursor:pointer;}
 
+/* ---------- Bible picker modal ---------- */
+.bible-modal{
+  position:fixed;inset:0;z-index:200;display:none;
+  background:rgba(3,8,22,0.78);backdrop-filter:blur(8px);
+  align-items:flex-end;justify-content:center;padding:0;
+}
+.bible-modal.open{display:flex;}
+.bible-modal-inner{
+  width:100%;max-width:760px;max-height:88vh;overflow:auto;
+  background:linear-gradient(180deg,#16265F,#0B1633);
+  border:1px solid rgba(232,178,61,0.28);border-bottom:none;
+  border-radius:20px 20px 0 0;box-shadow:0 -20px 60px rgba(0,0,0,0.6);
+  padding:18px 16px 24px;animation:bibleUp .28s ease;
+}
+@keyframes bibleUp{from{transform:translateY(18px);opacity:0}to{transform:none;opacity:1}}
+.bible-modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.bible-modal-head span{font-family:'Inter',sans-serif;font-weight:800;font-size:15px;color:#fff;letter-spacing:.02em;}
+.bible-modal-head button{width:36px;height:36px;border-radius:10px;border:1px solid rgba(154,166,204,0.25);background:rgba(255,255,255,0.06);color:#fff;font-size:20px;}
+.bible-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+.bible-controls select,.bible-controls input{
+  background:rgba(6,12,35,0.7);border:1px solid rgba(154,166,204,0.32);color:#fff;
+  border-radius:10px;padding:10px 10px;font-family:'Inter',sans-serif;font-size:14px;
+}
+.bible-controls select{flex:1;min-width:160px;}
+.bible-controls input{width:70px;}
+.bible-version-row{font-family:'Inter',sans-serif;font-size:12px;color:var(--slate);margin-bottom:10px;}
+.bible-version-row b{color:var(--gold-2);}
+.bible-preview{
+  background:rgba(255,255,255,0.04);border:1px solid rgba(154,166,204,0.18);
+  border-radius:12px;padding:14px;min-height:84px;max-height:220px;overflow:auto;
+  font-size:15px;line-height:1.6;color:var(--parchment);white-space:pre-wrap;margin-bottom:12px;
+}
+.bible-actions{display:flex;gap:10px;}
+.bible-actions .btn{flex:1;flex-direction:row;justify-content:center;padding:12px;}
+
 /* print */
 @media print{
   body *{visibility:hidden;}
@@ -407,8 +457,11 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
 
       <label class="ui">Bible Version for this Scripture</label>
       <div class="version-tabs ui" id="f_versionTabs"></div>
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <button class="file-btn ui" id="f_openBibleBtn" style="flex:1;">&#128214; Open Bible to pick verse for <span id="f_currentVersionLabel">NKJV</span></button>
+      </div>
       <textarea id="f_verseText" placeholder="Paste or type the scripture text for the selected version (Ctrl+V works here)"></textarea>
-      <div class="hint ui">Tap a version chip above to switch, then paste/type its wording. A dot shows versions already filled in.</div>
+      <div class="hint ui">Tap a version chip above to switch versions. Tap the same chip again or use the Bible button to open the Bible picker. A dot shows versions already filled in.</div>
 
       <label class="ui">Message Body</label>
       <textarea id="f_body" style="min-height:150px;" placeholder="Type or paste (Ctrl+V) the devotional message..."></textarea>
@@ -420,7 +473,7 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
       <label class="ui">Prayer Points</label>
       <div id="f_prayerList"></div>
       <button class="file-btn ui" id="f_addPrayer" style="margin-top:4px;">&#43; Add prayer point</button>
-      <div class="hint ui">Optional &mdash; specific points to pray over, shown right after the message.</div>
+      <div class="hint ui">Numbered automatically on display (1, 2, 3...). No bullets.</div>
 
       <label class="ui" id="f_declareHeadLbl">Declaration Heading</label>
       <input type="text" id="f_declareHead" placeholder="e.g. Speak Light Now!!!">
@@ -428,6 +481,10 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
       <label class="ui">Declarations (I speak...)</label>
       <div id="f_declList"></div>
       <button class="file-btn ui" id="f_addDecl" style="margin-top:4px;">&#43; Add line</button>
+
+      <label class="ui">Confession</label>
+      <textarea id="f_confession" style="min-height:110px;" placeholder="Type the confession... e.g. I confess that Christ lives in me, I am the righteousness of God..."></textarea>
+      <div class="hint ui">This will appear as a highlighted Confession panel on the devotional.</div>
 
       <label class="ui">Bible Reading Plan</label>
       <input type="text" id="f_plan" placeholder="e.g. Genesis 1-10">
@@ -540,6 +597,30 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
 
 </div>
 
+<!-- Bible Picker Modal -->
+<div id="bibleModal" class="bible-modal">
+  <div class="bible-modal-inner">
+    <div class="bible-modal-head">
+      <span>📖 Select Bible Verse</span>
+      <button id="bibleCloseBtn" type="button">&times;</button>
+    </div>
+    <div class="bible-controls">
+      <select id="bibleBook"></select>
+      <input type="number" id="bibleChapter" min="1" max="150" placeholder="Ch" inputmode="numeric">
+      <input type="number" id="bibleVerseFrom" min="1" max="176" placeholder="Vs" inputmode="numeric">
+      <span style="color:var(--slate);">-</span>
+      <input type="number" id="bibleVerseTo" min="1" max="176" placeholder="To" inputmode="numeric">
+    </div>
+    <div class="bible-version-row">Version: <b id="bibleVersionLabel">NKJV</b> <span id="bibleRefLabel" style="color:var(--slate-dim);margin-left:8px;"></span></div>
+    <div id="biblePreview" class="bible-preview">Choose a Book, Chapter and Verse, then tap Fetch.</div>
+    <div class="bible-actions ui">
+      <button class="btn btn-ghost" id="bibleFetchBtn" type="button">Fetch Verse</button>
+      <button class="btn btn-gold" id="bibleUseBtn" type="button">Use This Verse</button>
+    </div>
+    <div class="hint ui" style="margin-top:10px;">Powered by bible-api.com. Copyrighted versions (NIV, NKJV, ESV, NLT, Amplified) will fall back to KJV/WEB text due to copyright. You can edit after inserting. CHINYANJA: please type manually if needed.</div>
+  </div>
+</div>
+
 <div class="toast ui" id="toast"></div>
 <div id="print-area"></div>
 
@@ -633,6 +714,41 @@ function loadSettings(){
 }
 function saveSettings(s){ safeStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
 
+/* ---------------- Merge helpers (fix for save not showing) ----------------
+   Previously the cloud listener did ENTRIES = remote, which wiped a just-saved
+   local entry if the remote snapshot arrived with stale data or if the cloud
+   write failed. We now merge by updatedAt so the newest edit always wins,
+   and local unsynced edits are never erased. */
+function getEntryUpdatedAt(entry){
+  if(!entry) return 0;
+  if(typeof entry.updatedAt === 'number') return entry.updatedAt;
+  var n = parseInt(entry.updatedAt,10);
+  return isNaN(n) ? 0 : n;
+}
+function mergeEntriesFromRemote(remote){
+  if(!remote || typeof remote !== 'object') return false;
+  var changed = false;
+  for(var key in remote){
+    if(!Object.prototype.hasOwnProperty.call(remote, key)) continue;
+    var r = remote[key];
+    var l = ENTRIES[key];
+    if(!l){
+      ENTRIES[key] = r;
+      changed = true;
+    } else {
+      var rt = getEntryUpdatedAt(r);
+      var lt = getEntryUpdatedAt(l);
+      if(rt > lt){
+        ENTRIES[key] = r;
+        changed = true;
+      }
+      // if lt >= rt, keep local (prevents wiping a just-saved edit)
+    }
+  }
+  // keep local keys that remote doesn't have (do not delete)
+  return changed;
+}
+
 var ENTRIES = loadEntries();
 var SETTINGS = loadSettings();
 
@@ -701,7 +817,8 @@ function startDbSync(){
 
     entriesRef.once('value').then(function(snap){
       if(snap.exists() && snap.val()){
-        ENTRIES = snap.val();
+        var remoteOnce = snap.val();
+        mergeEntriesFromRemote(remoteOnce);
         saveEntries(ENTRIES);
       } else {
         entriesRef.set(ENTRIES).catch(function(){ toast("Could not seed the cloud \u2014 check Firebase rules/auth"); }); // first device online seeds the cloud
@@ -709,10 +826,14 @@ function startDbSync(){
       entriesRef.on('value', function(liveSnap){
         var remote = liveSnap.val();
         if(!remote) return;
-        ENTRIES = remote;
+        var didChange = mergeEntriesFromRemote(remote);
+        // Always persist merged result, but only re-render if something actually changed
+        // or if remote has newer data. Saving local after merge keeps storage in sync.
         saveEntries(ENTRIES);
-        if(typeof renderToday === 'function') renderToday();
-        if(typeof renderBrowse === 'function' && document.getElementById('view-browse').classList.contains('active')) renderBrowse();
+        if(didChange || true){ // re-render to be safe, merge already protects just-saved local
+          if(typeof renderToday === 'function') renderToday();
+          if(typeof renderBrowse === 'function' && document.getElementById('view-browse').classList.contains('active')) renderBrowse();
+        }
       });
       setSyncStatus('on','Connected \u2014 syncing automatically');
     }).catch(function(){ setSyncStatus('off','Offline (using this device\u2019s saved copy)'); });
@@ -913,11 +1034,11 @@ function renderEntryHTML(entry, forExport){
   html += '<div class="body-msg">'+escapeHTML(entry.body||"")+'</div>';
   if(entry.prayerPoints && entry.prayerPoints.length){
     html += '<div class="prayer-head">Prayer Points</div>';
-    html += '<ul class="prayer-list">';
+    html += '<ol class="prayer-list">';
     for(var pi=0;pi<entry.prayerPoints.length;pi++){
       if(entry.prayerPoints[pi]) html += '<li>'+escapeHTML(entry.prayerPoints[pi])+'</li>';
     }
-    html += '</ul>';
+    html += '</ol>';
   }
   if(entry.declarations && entry.declarations.length){
     html += '<div class="declare-head">'+escapeHTML(entry.declareHeading || "Declare This Now")+'</div>';
@@ -926,6 +1047,10 @@ function renderEntryHTML(entry, forExport){
       if(entry.declarations[i]) html += '<li>'+escapeHTML(entry.declarations[i])+'</li>';
     }
     html += '</ol>';
+  }
+  if(entry.confession && entry.confession.trim()){
+    html += '<div class="confession-head">Confession</div>';
+    html += '<div class="confession-box">'+escapeHTML(entry.confession)+'</div>';
   }
   if(entry.readingPlan){
     html += '<div class="plan-row"><span>&#128214;</span><span>Bible Reading Plan: <b>'+escapeHTML(entry.readingPlan)+'</b></span></div>';
@@ -1028,10 +1153,12 @@ function resetForm(dateISO){
   document.getElementById('f_verseText').value = "";
   document.getElementById('f_body').value = "";
   document.getElementById('f_declareHead').value = "Speak the Word Now!!!";
+  var confEl = document.getElementById('f_confession'); if(confEl) confEl.value = "";
   document.getElementById('f_plan').value = "";
   document.getElementById('writeModeLabel').textContent = "New Devotional";
   document.getElementById('deleteEntry').style.display = "none";
   currentVersionTab = SETTINGS.defaultVersion;
+  var curLab = document.getElementById('f_currentVersionLabel'); if(curLab) curLab.textContent = currentVersionTab;
   renderVersionTabs();
   renderDeclEditor();
   renderPrayerEditor();
@@ -1051,10 +1178,12 @@ function loadEntryIntoForm(dateISO){
   document.getElementById('f_ref').value = e.scriptureRef || "";
   document.getElementById('f_body').value = e.body || "";
   document.getElementById('f_declareHead').value = e.declareHeading || "Speak the Word Now!!!";
+  var confEl2 = document.getElementById('f_confession'); if(confEl2) confEl2.value = e.confession || "";
   document.getElementById('f_plan').value = e.readingPlan || "";
   document.getElementById('writeModeLabel').textContent = "Editing " + fmtLong(dateISO);
   document.getElementById('deleteEntry').style.display = "";
   currentVersionTab = (e.primaryVersion && draftVersions[e.primaryVersion]) ? e.primaryVersion : SETTINGS.defaultVersion;
+  var curLab2 = document.getElementById('f_currentVersionLabel'); if(curLab2) curLab2.textContent = currentVersionTab;
   renderVersionTabs();
   document.getElementById('f_verseText').value = draftVersions[currentVersionTab] || "";
   renderDeclEditor();
@@ -1075,9 +1204,16 @@ function renderVersionTabs(){
   var chips = wrap.querySelectorAll('.vchip');
   for(var c=0;c<chips.length;c++){
     chips[c].addEventListener('click', function(){
+      var clickedV = this.getAttribute('data-v');
+      // If already active, second tap opens Bible picker
+      if(clickedV === currentVersionTab){
+        if(typeof openBiblePicker === 'function') openBiblePicker(clickedV);
+        return;
+      }
       draftVersions[currentVersionTab] = document.getElementById('f_verseText').value;
-      currentVersionTab = this.getAttribute('data-v');
+      currentVersionTab = clickedV;
       document.getElementById('f_verseText').value = draftVersions[currentVersionTab] || "";
+      var curLab = document.getElementById('f_currentVersionLabel'); if(curLab) curLab.textContent = currentVersionTab;
       renderVersionTabs();
     });
   }
@@ -1147,7 +1283,18 @@ document.getElementById('f_addPrayer').addEventListener('click', function(){
 
 document.getElementById('saveEntry').addEventListener('click', function(){
   draftVersions[currentVersionTab] = document.getElementById('f_verseText').value;
-  var dateISO = document.getElementById('f_date').value;
+  var rawDate = document.getElementById('f_date').value.trim();
+  var dateISO = rawDate;
+  // Normalize dd/mm/yyyy (some WebViews) to yyyy-mm-dd
+  if(dateISO && dateISO.indexOf('/') !== -1){
+    var p = dateISO.split('/');
+    if(p.length === 3){
+      var dd = (p[0].length===1?'0'+p[0]:p[0]);
+      var mm = (p[1].length===1?'0'+p[1]:p[1]);
+      var yyyy = p[2];
+      if(yyyy.length===4) dateISO = yyyy+'-'+mm+'-'+dd;
+    }
+  }
   if(!dateISO){ toast("Please choose a date"); return; }
   var cleanDecls = [];
   for(var i=0;i<draftDecls.length;i++){ if(draftDecls[i] && draftDecls[i].trim()) cleanDecls.push(draftDecls[i].trim()); }
@@ -1171,12 +1318,14 @@ document.getElementById('saveEntry').addEventListener('click', function(){
     focus: document.getElementById('f_focus').value.trim(),
     scriptureRef: document.getElementById('f_ref').value.trim(),
     primaryVersion: currentVersionTab,
-    versions: draftVersions,
+    versions: (function(src){ var o={}; for(var k in src){ if(Object.prototype.hasOwnProperty.call(src,k)) o[k]=src[k]; } return o; })(draftVersions),
     body: bodyVal,
     prayerPoints: cleanPrayerPoints,
     declareHeading: document.getElementById('f_declareHead').value.trim(),
     declarations: cleanDecls,
-    readingPlan: document.getElementById('f_plan').value.trim()
+    confession: (document.getElementById('f_confession') ? document.getElementById('f_confession').value.trim() : ""),
+    readingPlan: document.getElementById('f_plan').value.trim(),
+    updatedAt: Date.now()
   };
   if(editingDate && editingDate !== dateISO){ delete ENTRIES[editingDate]; removeEntryFromCloud(editingDate); }
   ENTRIES[dateISO] = entry;
@@ -1272,12 +1421,21 @@ function renderVersionChips(){
     var v = SETTINGS.versions[i];
     var chip = document.createElement('span');
     chip.className = 'chip';
+    chip.setAttribute('data-v', v);
     chip.innerHTML = v + ' <span class="x" data-v="'+v+'">&times;</span>';
+    // Click on chip (not X) opens Bible picker for that version
+    chip.addEventListener('click', (function(ver){
+      return function(e){
+        if(e.target && e.target.classList && e.target.classList.contains('x')) return;
+        if(typeof openBiblePicker === 'function') openBiblePicker(ver);
+      };
+    })(v));
     wrap.appendChild(chip);
   }
   var xs = wrap.querySelectorAll('.x');
   for(var j=0;j<xs.length;j++){
-    xs[j].addEventListener('click', function(){
+    xs[j].addEventListener('click', function(e){
+      e.stopPropagation();
       var v = this.getAttribute('data-v');
       if(SETTINGS.versions.length <= 1){ toast("Keep at least one version"); return; }
       SETTINGS.versions = SETTINGS.versions.filter(function(x){ return x !== v; });
@@ -1308,6 +1466,126 @@ document.getElementById('set_defaultVersion').addEventListener('change', functio
     renderToday();
   });
 });
+
+/* ---------------- Bible Picker (for version chips) ---------------- */
+var BIBLE_BOOKS = ["Genesis","Exodus","Leviticus","Numbers","Deuteronomy","Joshua","Judges","Ruth","1 Samuel","2 Samuel","1 Kings","2 Kings","1 Chronicles","2 Chronicles","Ezra","Nehemiah","Esther","Job","Psalms","Proverbs","Ecclesiastes","Song of Solomon","Isaiah","Jeremiah","Lamentations","Ezekiel","Daniel","Hosea","Joel","Amos","Obadiah","Jonah","Micah","Nahum","Habakkuk","Zephaniah","Haggai","Zechariah","Malachi","Matthew","Mark","Luke","John","Acts","Romans","1 Corinthians","2 Corinthians","Galatians","Ephesians","Philippians","Colossians","1 Thessalonians","2 Thessalonians","1 Timothy","2 Timothy","Titus","Philemon","Hebrews","James","1 Peter","2 Peter","1 John","2 John","3 John","Jude","Revelation"];
+var BIBLE_VERSION_MAP = {
+  "KJV":"kjv","NKJV":"kjv","NIV":"web","NLT":"web","ESV":"web","ERV":"web","AMPLIFIED":"web","CHINYANJA":"kjv"
+};
+var currentBibleVersion = SETTINGS.defaultVersion || "NKJV";
+var lastFetchedText = "";
+var lastFetchedRef = "";
+
+function populateBibleBooks(){
+  var sel = document.getElementById('bibleBook');
+  if(!sel || sel.options.length) return;
+  for(var i=0;i<BIBLE_BOOKS.length;i++){
+    var opt = document.createElement('option');
+    opt.value = BIBLE_BOOKS[i];
+    opt.textContent = BIBLE_BOOKS[i];
+    sel.appendChild(opt);
+  }
+}
+function openBiblePicker(version){
+  currentBibleVersion = version || currentVersionTab || SETTINGS.defaultVersion || "NKJV";
+  populateBibleBooks();
+  var modal = document.getElementById('bibleModal');
+  var vLab = document.getElementById('bibleVersionLabel'); if(vLab) vLab.textContent = currentBibleVersion;
+  var refLab = document.getElementById('bibleRefLabel'); if(refLab) refLab.textContent = "";
+  var preview = document.getElementById('biblePreview'); if(preview) preview.textContent = "Choose a Book, Chapter and Verse, then tap Fetch.";
+  // Prefill from current scripture ref if possible
+  try{
+    var curRef = document.getElementById('f_ref') ? document.getElementById('f_ref').value.trim() : "";
+    if(curRef){
+      var m = curRef.match(/^(.+?)\s+(\d+):(\d+)/);
+      if(m){
+        var bk = m[1].trim();
+        var ch = parseInt(m[2],10); var vs = parseInt(m[3],10);
+        var bookSel = document.getElementById('bibleBook');
+        for(var b=0;b<bookSel.options.length;b++){ if(bookSel.options[b].value.toLowerCase()===bk.toLowerCase()){ bookSel.selectedIndex=b; break; } }
+        var chEl = document.getElementById('bibleChapter'); if(chEl) chEl.value = ch;
+        var vsEl = document.getElementById('bibleVerseFrom'); if(vsEl) vsEl.value = vs;
+      }
+    }
+  }catch(e){}
+  if(modal){ modal.classList.add('open'); }
+}
+function closeBiblePicker(){
+  var modal = document.getElementById('bibleModal');
+  if(modal) modal.classList.remove('open');
+}
+function buildBibleRef(){
+  var book = document.getElementById('bibleBook') ? document.getElementById('bibleBook').value : "";
+  var ch = document.getElementById('bibleChapter') ? document.getElementById('bibleChapter').value.trim() : "";
+  var vf = document.getElementById('bibleVerseFrom') ? document.getElementById('bibleVerseFrom').value.trim() : "";
+  var vt = document.getElementById('bibleVerseTo') ? document.getElementById('bibleVerseTo').value.trim() : "";
+  if(!book || !ch || !vf) return "";
+  var ref = book + " " + ch + ":" + vf;
+  if(vt && vt!==vf) ref += "-" + vt;
+  return ref;
+}
+function fetchBibleVerse(){
+  var ref = buildBibleRef();
+  var preview = document.getElementById('biblePreview');
+  var refLab = document.getElementById('bibleRefLabel');
+  if(!ref){ toast("Pick Book, Chapter and Verse"); return; }
+  var trans = BIBLE_VERSION_MAP[currentBibleVersion] || "kjv";
+  var url = "https://bible-api.com/" + encodeURIComponent(ref) + "?translation=" + trans;
+  if(preview) preview.textContent = "Loading " + ref + " ("+trans.toUpperCase()+")...";
+  if(refLab) refLab.textContent = ref;
+  // Try fetch, fallback to web if fails and trans was kjv
+  fetch(url).then(function(r){ if(!r.ok) throw new Error("not found"); return r.json(); }).then(function(data){
+    var txt = data && data.text ? data.text.trim() : "";
+    if(!txt && data && data.verses && data.verses.length){
+      txt = data.verses.map(function(v){ return v.text; }).join(" ").trim();
+    }
+    if(!txt) throw new Error("empty");
+    lastFetchedText = txt;
+    lastFetchedRef = ref;
+    if(preview) preview.textContent = txt;
+    toast("Verse loaded");
+  }).catch(function(err){
+    if(preview) preview.textContent = "Could not fetch " + ref + ". Check connection or try another book/chapter. You can still type manually. (Error: "+ (err && err.message ? err.message : "network") +")";
+    toast("Fetch failed - you can type manually");
+  });
+}
+function useBibleVerse(){
+  if(!lastFetchedText){ toast("Fetch a verse first"); return; }
+  // Update draftVersions for current picker version
+  draftVersions[currentBibleVersion] = lastFetchedText;
+  // If we are in Write tab, update the textarea and reference
+  var verseTA = document.getElementById('f_verseText');
+  var refInput = document.getElementById('f_ref');
+  if(verseTA){
+    // If currentVersionTab matches picker version, show immediately
+    if(currentVersionTab === currentBibleVersion || !currentVersionTab){
+      verseTA.value = lastFetchedText;
+    } else {
+      // Switch to that version
+      draftVersions[currentVersionTab] = verseTA.value;
+      currentVersionTab = currentBibleVersion;
+      verseTA.value = lastFetchedText;
+      var curLab = document.getElementById('f_currentVersionLabel'); if(curLab) curLab.textContent = currentVersionTab;
+      if(typeof renderVersionTabs === 'function') renderVersionTabs();
+    }
+  }
+  if(refInput && lastFetchedRef){ refInput.value = lastFetchedRef; }
+  toast(currentBibleVersion + " verse inserted: " + lastFetchedRef);
+  closeBiblePicker();
+}
+// Wire buttons (run once)
+(function(){
+  var closeBtn = document.getElementById('bibleCloseBtn');
+  if(closeBtn) closeBtn.addEventListener('click', closeBiblePicker);
+  var fetchBtn = document.getElementById('bibleFetchBtn');
+  if(fetchBtn) fetchBtn.addEventListener('click', fetchBibleVerse);
+  var useBtn = document.getElementById('bibleUseBtn');
+  if(useBtn) useBtn.addEventListener('click', useBibleVerse);
+  var modal = document.getElementById('bibleModal');
+  if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeBiblePicker(); });
+  var openBtn = document.getElementById('f_openBibleBtn');
+  if(openBtn) openBtn.addEventListener('click', function(){ openBiblePicker(currentVersionTab || SETTINGS.defaultVersion); });
+})();
 
 function fileToDataURL(file, cb){
   var reader = new FileReader();
@@ -1394,12 +1672,17 @@ function buildShareText(entry){
   if(entry.prayerPoints && entry.prayerPoints.length){
     lines.push("");
     lines.push("Prayer Points");
-    for(var pi=0;pi<entry.prayerPoints.length;pi++){ if(entry.prayerPoints[pi]) lines.push("\u2022 "+entry.prayerPoints[pi]); }
+    for(var pi=0;pi<entry.prayerPoints.length;pi++){ if(entry.prayerPoints[pi]) lines.push((pi+1)+". "+entry.prayerPoints[pi]); }
   }
   if(entry.declarations && entry.declarations.length){
     lines.push("");
     lines.push(entry.declareHeading || "Declare This Now");
     for(var i=0;i<entry.declarations.length;i++){ lines.push((i+1)+". "+entry.declarations[i]); }
+  }
+  if(entry.confession && entry.confession.trim()){
+    lines.push("");
+    lines.push("Confession");
+    lines.push(entry.confession);
   }
   if(entry.readingPlan){ lines.push(""); lines.push("Bible Reading Plan: "+entry.readingPlan); }
   lines.push("");
@@ -1495,14 +1778,17 @@ function plainEntryForPrint(entry){
   if(vt.text) html += "<blockquote style='border-left:3px solid #999;padding-left:12px;font-style:italic;'>"+escapeHTML(vt.text)+" ("+escapeHTML(vt.v)+")</blockquote>";
   html += "<p>"+escapeHTML(entry.body||"").replace(/\n/g,"<br>")+"</p>";
   if(entry.prayerPoints && entry.prayerPoints.length){
-    html += "<p><b>Prayer Points</b></p><ul>";
+    html += "<p><b>Prayer Points</b></p><ol>";
     for(var pi=0;pi<entry.prayerPoints.length;pi++){ if(entry.prayerPoints[pi]) html += "<li>"+escapeHTML(entry.prayerPoints[pi])+"</li>"; }
-    html += "</ul>";
+    html += "</ol>";
   }
   if(entry.declarations && entry.declarations.length){
     html += "<p><b>"+escapeHTML(entry.declareHeading||"")+"</b></p><ol>";
     for(var i=0;i<entry.declarations.length;i++){ html += "<li>"+escapeHTML(entry.declarations[i])+"</li>"; }
     html += "</ol>";
+  }
+  if(entry.confession && entry.confession.trim()){
+    html += "<p><b>Confession</b></p><blockquote style='border-left:3px solid #E8B23D;padding:10px 14px;background:#FFF8E7;font-style:italic;'>"+escapeHTML(entry.confession).replace(/\n/g,"<br>")+"</blockquote>";
   }
   if(entry.readingPlan) html += "<p><b>Bible Reading Plan:</b> "+escapeHTML(entry.readingPlan)+"</p>";
   html += "<hr><p style='text-align:center;color:#555;'>"+escapeHTML(SETTINGS.pastor)+" &middot; Prayer Line "+escapeHTML(SETTINGS.prayerline)+"</p>";
@@ -1574,6 +1860,24 @@ function buildStandaloneHTML(entry){
   html += "<div class='ref'>Scripture &middot; "+escapeHTML(entry.scriptureRef||"")+"</div>";
   if(versionKeys.length > 1){ html += "<div class='vbtns'>"+chipsHTML+"</div>"; }
   html += panelsHTML;
+
+  if(entry.body){
+    html += "<div style='margin-top:16px;font-size:15px;line-height:1.7;color:#EFE7D5;white-space:pre-wrap;'>"+escapeHTML(entry.body)+"</div>";
+  }
+  if(entry.prayerPoints && entry.prayerPoints.length){
+    html += "<div style='margin-top:18px;'><div class='ttl-label'>Prayer Points</div><ol style='margin:6px 0 0 18px;padding:0;color:#F7F2E7;'>";
+    for(var ppi=0;ppi<entry.prayerPoints.length;ppi++){ if(entry.prayerPoints[ppi]) html += "<li style='margin:6px 0;'>"+escapeHTML(entry.prayerPoints[ppi])+"</li>"; }
+    html += "</ol></div>";
+  }
+  if(entry.declarations && entry.declarations.length){
+    html += "<div style='margin-top:18px;'><div class='ttl-label' style='color:#D0342C;'>"+escapeHTML(entry.declareHeading||"Declare This Now")+"</div><ol style='margin:6px 0 0 18px;padding:0;color:#fff;'>";
+    for(var di=0;di<entry.declarations.length;di++){ if(entry.declarations[di]) html += "<li style='margin:6px 0;'>"+escapeHTML(entry.declarations[di])+"</li>"; }
+    html += "</ol></div>";
+  }
+  if(entry.confession && entry.confession.trim()){
+    html += "<div style='margin-top:18px;'><div class='ttl-label'>Confession</div><div style='background:rgba(232,178,61,0.08);border-left:3px solid #E8B23D;border-radius:10px;padding:12px 14px;font-style:italic;'>"+escapeHTML(entry.confession)+"</div></div>";
+  }
+
   html += "</div>";
 
   if(entry.readingPlan){
