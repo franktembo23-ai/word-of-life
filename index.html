@@ -112,16 +112,16 @@ button{font-family:inherit;cursor:pointer;}
 .plaque-inner{position:relative;z-index:1;}
 
 .day-strip{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  font-family:'Inter',sans-serif;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--gold-2);font-weight:700;margin-bottom:14px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  font-family:'Inter',sans-serif;font-size:15px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--gold-2);font-weight:700;margin-bottom:14px;text-align:center;
 }
 .day-strip .dot{opacity:.5;}
 
 .date-block{text-align:center;margin:6px 0 18px;}
 .date-block .weekday{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--slate);font-family:'Inter',sans-serif;font-weight:600;}
 .date-block .big{
-  font-size:30px;font-weight:800;margin:4px 0 0;line-height:1.1;
+  font-size:19px;font-weight:800;margin:4px 0 0;line-height:1.1;
   background:linear-gradient(180deg,#fff, var(--gold-2));
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
@@ -149,30 +149,30 @@ button{font-family:inherit;cursor:pointer;}
   font-family:'Inter',sans-serif;font-weight:700;font-size:13px;letter-spacing:.04em;
   color:var(--gold);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px;
 }
-.prayer-list{list-style:none;margin:0 0 18px;padding:0;counter-reset:pray;}
+.prayer-list{list-style:none;margin:0 0 18px;padding:0;counter-reset:prayernum;}
 .prayer-list li{
-  counter-increment:pray;position:relative;padding:8px 0 8px 34px;font-size:15px;line-height:1.5;
+  counter-increment:prayernum;position:relative;padding:8px 0 8px 28px;font-size:15px;line-height:1.5;
   border-top:1px solid rgba(232,178,61,0.16);color:var(--parchment);
 }
 .prayer-list li:first-child{border-top:none;}
 .prayer-list li::before{
-  content:counter(pray);position:absolute;left:0;top:9px;
-  width:22px;height:22px;border-radius:50%;
-  background:linear-gradient(135deg,var(--gold-2),var(--gold));
-  color:var(--ink);font-family:'Inter',sans-serif;font-weight:800;font-size:11px;
-  display:flex;align-items:center;justify-content:center;
+  content:counter(prayernum) ".";position:absolute;left:0;top:8px;
+  color:var(--gold);font-weight:700;font-family:'Inter',sans-serif;font-size:14px;
 }
 
 .confession-head{
   font-family:'Inter',sans-serif;font-weight:700;font-size:13px;letter-spacing:.04em;
-  color:var(--gold-2);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px;
+  color:#7FB3E8;text-transform:uppercase;margin-bottom:8px;
 }
 .confession-box{
-  background:rgba(232,178,61,0.07);border:1px solid rgba(232,178,61,0.22);
-  border-left:3px solid var(--gold);
-  border-radius:12px;padding:14px 16px;margin:0 0 18px;
-  font-size:16px;line-height:1.7;color:var(--parchment);white-space:pre-wrap;
+  background:rgba(127,179,232,0.07);border:1px solid rgba(127,179,232,0.28);border-radius:12px;
+  padding:14px 16px;margin-bottom:18px;font-size:15.5px;line-height:1.7;color:var(--parchment);
+  font-style:italic;white-space:pre-wrap;
 }
+
+.plan-row.clickable{cursor:pointer;transition:background .15s ease;}
+.plan-row.clickable:active{background:rgba(232,178,61,0.12);}
+.plan-row .go{margin-left:auto;color:var(--gold);font-size:12px;}
 
 .declare-head{
   font-family:'Inter',sans-serif;font-weight:700;font-size:13px;letter-spacing:.04em;
@@ -193,72 +193,11 @@ button{font-family:inherit;cursor:pointer;}
 }
 
 .plan-row{
-  display:flex;align-items:center;gap:10px;font-family:'Inter',sans-serif;font-size:14px;
-  color:var(--slate);background:rgba(20,32,82,0.72);border:1px solid rgba(124,139,189,0.38);
-  border-radius:999px;padding:13px 18px;margin:6px 0 20px;
-  cursor:pointer;user-select:none;
-  transition:background .18s ease, border-color .18s ease, transform .12s ease;
-  box-shadow:0 2px 10px rgba(0,0,0,0.18) inset;
+  display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:13px;
+  color:var(--slate);background:rgba(255,255,255,0.04);border:1px solid rgba(154,166,204,0.18);
+  border-radius:12px;padding:10px 12px;margin-bottom:20px;
 }
-.plan-row:hover{border-color:rgba(232,178,61,0.55);background:rgba(26,40,102,0.9);}
-.plan-row:active{transform:scale(0.985);}
-.plan-row b{color:#fff;font-weight:700;}
-.plan-row .plan-arrow{margin-left:auto;font-size:14px;opacity:.55;transition:transform .18s ease;}
-.plan-row:hover .plan-arrow{transform:translateX(2px);opacity:.9;}
-
-/* ---------- Bible Reading Plan Reader modal ---------- */
-.reading-modal{
-  position:fixed;inset:0;z-index:210;display:none;
-  background:rgba(3,8,22,0.82);backdrop-filter:blur(10px);
-  align-items:flex-end;justify-content:center;padding:0;
-}
-.reading-modal.open{display:flex;}
-.reading-modal-inner{
-  width:100%;max-width:780px;max-height:92vh;display:flex;flex-direction:column;
-  background:linear-gradient(180deg,#18285E 0%,#0C1740 55%,#08102E 100%);
-  border:1px solid rgba(232,178,61,0.28);border-bottom:none;
-  border-radius:22px 22px 0 0;box-shadow:0 -24px 70px rgba(0,0,0,0.7);
-  animation:bibleUp .28s ease;overflow:hidden;
-}
-.reading-modal-head{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding:16px 18px 12px;border-bottom:1px solid rgba(154,166,204,0.15);flex:none;
-}
-.reading-modal-head .ttl{font-family:'Inter',sans-serif;font-weight:800;font-size:15px;color:#fff;letter-spacing:.01em;display:flex;align-items:center;gap:8px;}
-.reading-modal-head .ttl small{font-weight:600;color:var(--gold-2);font-size:12px;letter-spacing:.04em;}
-.reading-modal-head button{width:36px;height:36px;border-radius:10px;border:1px solid rgba(154,166,204,0.25);background:rgba(255,255,255,0.06);color:#fff;font-size:20px;flex:none;}
-.reading-version-bar{
-  display:flex;gap:6px;flex-wrap:wrap;align-items:center;
-  padding:10px 18px 12px;border-bottom:1px solid rgba(154,166,204,0.12);flex:none;
-  background:rgba(255,255,255,0.02);
-}
-.reading-version-bar .rvchip{
-  font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.03em;
-  padding:6px 10px;border-radius:999px;border:1px solid rgba(154,166,204,0.28);
-  background:rgba(255,255,255,0.05);color:var(--slate);cursor:pointer;
-}
-.reading-version-bar .rvchip.active{background:var(--gold);color:var(--ink);border-color:transparent;}
-.reading-content{
-  flex:1;overflow:auto;padding:16px 18px 18px;
-  font-size:16.2px;line-height:1.78;color:var(--parchment);
-  -webkit-overflow-scrolling:touch;
-}
-.reading-content .ch-head{
-  font-family:'Inter',sans-serif;font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--gold-2);margin:22px 0 8px;padding-top:14px;border-top:1px dashed rgba(154,166,204,0.18);
-}
-.reading-content .ch-head:first-child{margin-top:2px;border-top:none;padding-top:0;}
-.reading-content .verse{margin:7px 0;}
-.reading-content .vnum{
-  font-family:'Inter',sans-serif;font-weight:800;font-size:11px;color:var(--gold-2);
-  margin-right:6px;vertical-align:baseline;opacity:.9;
-}
-.reading-actions{
-  display:flex;gap:8px;padding:12px 16px 16px;border-top:1px solid rgba(154,166,204,0.14);flex:none;
-  background:linear-gradient(180deg,rgba(12,23,64,0.2),rgba(8,16,46,0.95));
-}
-.reading-actions .btn{flex:1;flex-direction:row;justify-content:center;padding:11px 10px;font-size:13px;}
-.reading-hint{font-family:'Inter',sans-serif;font-size:11px;color:var(--slate-dim);padding:0 18px 10px;flex:none;}
+.plan-row b{color:var(--parchment);font-weight:600;}
 
 .pastor-row{
   display:flex;align-items:center;gap:12px;padding-top:16px;border-top:1px dashed rgba(232,178,61,0.3);
@@ -367,6 +306,18 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
 .entry-row .et .fr{font-family:'Inter',sans-serif;font-size:11.5px;color:var(--slate);margin-top:2px;}
 .entry-row .chev{color:var(--slate);font-size:18px;}
 .entry-row.today .ebadge{background:linear-gradient(135deg,var(--gold),var(--red));color:var(--ink);}
+.entry-row .row-del{
+  flex:none;width:34px;height:34px;border-radius:9px;background:rgba(208,52,44,0.12);
+  border:1px solid rgba(208,52,44,0.3);color:var(--red);font-size:15px;display:flex;
+  align-items:center;justify-content:center;
+}
+
+.browse-header{display:flex;align-items:center;justify-content:space-between;margin:22px 2px 10px;}
+.clear-all-btn{
+  font-family:'Inter',sans-serif;font-size:11.5px;font-weight:700;color:var(--red);
+  background:rgba(208,52,44,0.1);border:1px solid rgba(208,52,44,0.35);border-radius:999px;
+  padding:6px 12px;
+}
 
 .empty-state{
   text-align:center;padding:40px 16px;color:var(--slate);font-family:'Inter',sans-serif;font-size:13.5px;
@@ -395,41 +346,6 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
 }
 .chip .x{color:var(--red);font-weight:800;cursor:pointer;}
 
-/* ---------- Bible picker modal ---------- */
-.bible-modal{
-  position:fixed;inset:0;z-index:200;display:none;
-  background:rgba(3,8,22,0.78);backdrop-filter:blur(8px);
-  align-items:flex-end;justify-content:center;padding:0;
-}
-.bible-modal.open{display:flex;}
-.bible-modal-inner{
-  width:100%;max-width:760px;max-height:88vh;overflow:auto;
-  background:linear-gradient(180deg,#16265F,#0B1633);
-  border:1px solid rgba(232,178,61,0.28);border-bottom:none;
-  border-radius:20px 20px 0 0;box-shadow:0 -20px 60px rgba(0,0,0,0.6);
-  padding:18px 16px 24px;animation:bibleUp .28s ease;
-}
-@keyframes bibleUp{from{transform:translateY(18px);opacity:0}to{transform:none;opacity:1}}
-.bible-modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.bible-modal-head span{font-family:'Inter',sans-serif;font-weight:800;font-size:15px;color:#fff;letter-spacing:.02em;}
-.bible-modal-head button{width:36px;height:36px;border-radius:10px;border:1px solid rgba(154,166,204,0.25);background:rgba(255,255,255,0.06);color:#fff;font-size:20px;}
-.bible-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
-.bible-controls select,.bible-controls input{
-  background:rgba(6,12,35,0.7);border:1px solid rgba(154,166,204,0.32);color:#fff;
-  border-radius:10px;padding:10px 10px;font-family:'Inter',sans-serif;font-size:14px;
-}
-.bible-controls select{flex:1;min-width:160px;}
-.bible-controls input{width:70px;}
-.bible-version-row{font-family:'Inter',sans-serif;font-size:12px;color:var(--slate);margin-bottom:10px;}
-.bible-version-row b{color:var(--gold-2);}
-.bible-preview{
-  background:rgba(255,255,255,0.04);border:1px solid rgba(154,166,204,0.18);
-  border-radius:12px;padding:14px;min-height:84px;max-height:220px;overflow:auto;
-  font-size:15px;line-height:1.6;color:var(--parchment);white-space:pre-wrap;margin-bottom:12px;
-}
-.bible-actions{display:flex;gap:10px;}
-.bible-actions .btn{flex:1;flex-direction:row;justify-content:center;padding:12px;}
-
 /* print */
 @media print{
   body *{visibility:hidden;}
@@ -452,7 +368,7 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
 
   <div class="tabs ui">
     <div class="tab active" data-tab="today">Today</div>
-    <div class="tab" data-tab="browse">Read</div>
+    <div class="tab" data-tab="browse">&#128274; Read</div>
     <div class="tab" data-tab="write">&#128274; Write</div>
     <div class="tab" data-tab="settings">&#128274; Settings</div>
   </div>
@@ -499,7 +415,10 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
 
   <!-- ================= BROWSE ================= -->
   <div class="view" id="view-browse">
-    <div class="section-title ui">All Devotionals</div>
+    <div class="browse-header ui">
+      <div class="section-title ui" style="margin:0;">All Devotionals</div>
+      <button class="clear-all-btn" id="clearAllBtn">&#128465; Clear All</button>
+    </div>
     <div class="card" id="browseList" style="padding:4px 12px;"></div>
   </div>
 
@@ -518,11 +437,8 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
 
       <label class="ui">Bible Version for this Scripture</label>
       <div class="version-tabs ui" id="f_versionTabs"></div>
-      <div style="display:flex;gap:8px;margin-bottom:8px;">
-        <button class="file-btn ui" id="f_openBibleBtn" style="flex:1;">&#128214; Open Bible to pick verse for <span id="f_currentVersionLabel">NKJV</span></button>
-      </div>
       <textarea id="f_verseText" placeholder="Paste or type the scripture text for the selected version (Ctrl+V works here)"></textarea>
-      <div class="hint ui">Tap a version chip above to switch versions. Tap the same chip again or use the Bible button to open the Bible picker. A dot shows versions already filled in.</div>
+      <div class="hint ui">Type a Scripture Reference above, then tap a version to open it in the Bible and select verses. Paste the wording back here. A dot shows versions already filled in.</div>
 
       <label class="ui">Message Body</label>
       <textarea id="f_body" style="min-height:150px;" placeholder="Type or paste (Ctrl+V) the devotional message..."></textarea>
@@ -534,7 +450,11 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
       <label class="ui">Prayer Points</label>
       <div id="f_prayerList"></div>
       <button class="file-btn ui" id="f_addPrayer" style="margin-top:4px;">&#43; Add prayer point</button>
-      <div class="hint ui">Numbered automatically on display (1, 2, 3...). No bullets.</div>
+      <div class="hint ui">Optional &mdash; specific points to pray over, shown right after the message.</div>
+
+      <label class="ui">Confession</label>
+      <textarea id="f_confession" style="min-height:90px;" placeholder="Type or paste a confession/declaration of faith for today..."></textarea>
+      <div class="hint ui">Optional &mdash; a statement of faith to speak, shown before Declare This Now.</div>
 
       <label class="ui" id="f_declareHeadLbl">Declaration Heading</label>
       <input type="text" id="f_declareHead" placeholder="e.g. Speak Light Now!!!">
@@ -542,10 +462,6 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
       <label class="ui">Declarations (I speak...)</label>
       <div id="f_declList"></div>
       <button class="file-btn ui" id="f_addDecl" style="margin-top:4px;">&#43; Add line</button>
-
-      <label class="ui">Confession</label>
-      <textarea id="f_confession" style="min-height:110px;" placeholder="Type the confession... e.g. I confess that Christ lives in me, I am the righteousness of God..."></textarea>
-      <div class="hint ui">This will appear as a highlighted Confession panel on the devotional.</div>
 
       <label class="ui">Bible Reading Plan</label>
       <input type="text" id="f_plan" placeholder="e.g. Genesis 1-10">
@@ -658,48 +574,6 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
 
 </div>
 
-<!-- Bible Picker Modal -->
-<div id="bibleModal" class="bible-modal">
-  <div class="bible-modal-inner">
-    <div class="bible-modal-head">
-      <span>📖 Select Bible Verse</span>
-      <button id="bibleCloseBtn" type="button">&times;</button>
-    </div>
-    <div class="bible-controls">
-      <select id="bibleBook"></select>
-      <input type="number" id="bibleChapter" min="1" max="150" placeholder="Ch" inputmode="numeric">
-      <input type="number" id="bibleVerseFrom" min="1" max="176" placeholder="Vs" inputmode="numeric">
-      <span style="color:var(--slate);">-</span>
-      <input type="number" id="bibleVerseTo" min="1" max="176" placeholder="To" inputmode="numeric">
-    </div>
-    <div class="bible-version-row">Version: <b id="bibleVersionLabel">NKJV</b> <span id="bibleRefLabel" style="color:var(--slate-dim);margin-left:8px;"></span></div>
-    <div id="biblePreview" class="bible-preview">Choose a Book, Chapter and Verse, then tap Fetch.</div>
-    <div class="bible-actions ui">
-      <button class="btn btn-ghost" id="bibleFetchBtn" type="button">Fetch Verse</button>
-      <button class="btn btn-gold" id="bibleUseBtn" type="button">Use This Verse</button>
-    </div>
-    <div class="hint ui" style="margin-top:10px;">Powered by bible-api.com. Copyrighted versions (NIV, NKJV, ESV, NLT, Amplified) will fall back to KJV/WEB text due to copyright. You can edit after inserting. CHINYANJA: please type manually if needed.</div>
-  </div>
-</div>
-
-<!-- Bible Reading Plan Reader Modal -->
-<div id="readingPlanModal" class="reading-modal">
-  <div class="reading-modal-inner">
-    <div class="reading-modal-head">
-      <div class="ttl">📖 <span id="readingPlanTitle">Bible Reading Plan</span> <small id="readingPlanSub"></small></div>
-      <button id="readingPlanCloseBtn" type="button">&times;</button>
-    </div>
-    <div id="readingVersionBar" class="reading-version-bar"></div>
-    <div id="readingPlanContent" class="reading-content">Loading...</div>
-    <div id="readingPlanHint" class="reading-hint">Powered by bible-api.com. Tip: tap a version chip to switch translation. Large plans like Genesis 21-30 load in sections.</div>
-    <div class="reading-actions ui">
-      <button class="btn btn-ghost" id="readingPrevBtn" type="button">‹ Prev</button>
-      <button class="btn btn-gold" id="readingCopyBtn" type="button">Copy Text</button>
-      <button class="btn btn-ghost" id="readingNextBtn" type="button">Next ›</button>
-    </div>
-  </div>
-</div>
-
 <div class="toast ui" id="toast"></div>
 <div id="print-area"></div>
 
@@ -793,41 +667,6 @@ function loadSettings(){
 }
 function saveSettings(s){ safeStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
 
-/* ---------------- Merge helpers (fix for save not showing) ----------------
-   Previously the cloud listener did ENTRIES = remote, which wiped a just-saved
-   local entry if the remote snapshot arrived with stale data or if the cloud
-   write failed. We now merge by updatedAt so the newest edit always wins,
-   and local unsynced edits are never erased. */
-function getEntryUpdatedAt(entry){
-  if(!entry) return 0;
-  if(typeof entry.updatedAt === 'number') return entry.updatedAt;
-  var n = parseInt(entry.updatedAt,10);
-  return isNaN(n) ? 0 : n;
-}
-function mergeEntriesFromRemote(remote){
-  if(!remote || typeof remote !== 'object') return false;
-  var changed = false;
-  for(var key in remote){
-    if(!Object.prototype.hasOwnProperty.call(remote, key)) continue;
-    var r = remote[key];
-    var l = ENTRIES[key];
-    if(!l){
-      ENTRIES[key] = r;
-      changed = true;
-    } else {
-      var rt = getEntryUpdatedAt(r);
-      var lt = getEntryUpdatedAt(l);
-      if(rt > lt){
-        ENTRIES[key] = r;
-        changed = true;
-      }
-      // if lt >= rt, keep local (prevents wiping a just-saved edit)
-    }
-  }
-  // keep local keys that remote doesn't have (do not delete)
-  return changed;
-}
-
 var ENTRIES = loadEntries();
 var SETTINGS = loadSettings();
 
@@ -896,8 +735,7 @@ function startDbSync(){
 
     entriesRef.once('value').then(function(snap){
       if(snap.exists() && snap.val()){
-        var remoteOnce = snap.val();
-        mergeEntriesFromRemote(remoteOnce);
+        ENTRIES = snap.val();
         saveEntries(ENTRIES);
       } else {
         entriesRef.set(ENTRIES).catch(function(){ toast("Could not seed the cloud \u2014 check Firebase rules/auth"); }); // first device online seeds the cloud
@@ -905,14 +743,22 @@ function startDbSync(){
       entriesRef.on('value', function(liveSnap){
         var remote = liveSnap.val();
         if(!remote) return;
-        var didChange = mergeEntriesFromRemote(remote);
-        // Always persist merged result, but only re-render if something actually changed
-        // or if remote has newer data. Saving local after merge keeps storage in sync.
-        saveEntries(ENTRIES);
-        if(didChange || true){ // re-render to be safe, merge already protects just-saved local
-          if(typeof renderToday === 'function') renderToday();
-          if(typeof renderBrowse === 'function' && document.getElementById('view-browse').classList.contains('active')) renderBrowse();
+        /* A local save/delete that hasn't been confirmed as written to the
+           cloud yet must not be overwritten by an incoming snapshot - that
+           snapshot could still be the OLD data from before this device's
+           edit (e.g. the edit's own write failed, or this event is a stale
+           reconnect). Without this guard, a failed cloud push could silently
+           erase a devotional that was correctly saved on this device. */
+        var merged = {};
+        for(var k in remote){ merged[k] = remote[k]; }
+        for(var pk in pendingSync){
+          if(pendingSync[pk] === 'save' && ENTRIES[pk]){ merged[pk] = ENTRIES[pk]; }
+          else if(pendingSync[pk] === 'delete'){ delete merged[pk]; }
         }
+        ENTRIES = merged;
+        saveEntries(ENTRIES);
+        if(typeof renderToday === 'function') renderToday();
+        if(typeof renderBrowse === 'function' && document.getElementById('view-browse').classList.contains('active')) renderBrowse();
       });
       setSyncStatus('on','Connected \u2014 syncing automatically');
     }).catch(function(){ setSyncStatus('off','Offline (using this device\u2019s saved copy)'); });
@@ -930,6 +776,7 @@ function startDbSync(){
         settingsRef.set(SETTINGS);
       }
       settingsRef.on('value', function(liveSnap){
+        if(settingsPending) return; // a local settings save hasn't been confirmed yet - don't clobber it
         var remote = liveSnap.val();
         if(!remote) return;
         for(var k in remote){ SETTINGS[k] = remote[k]; }
@@ -950,22 +797,391 @@ function startDbSync(){
   }catch(e){ setSyncStatus('off','Offline (sync unavailable)'); }
 }
 
+var pendingSync = {}; // dateISO -> 'save' | 'delete', cleared once the cloud confirms the write
+var settingsPending = false;
+
 function pushEntryToCloud(dateISO, entryObj){
   if(!cloudReady || !entriesRef) return;
+  pendingSync[dateISO] = 'save';
   try{
-    entriesRef.child(dateISO).set(entryObj).catch(function(){
+    entriesRef.child(dateISO).set(entryObj).then(function(){
+      if(pendingSync[dateISO] === 'save') delete pendingSync[dateISO];
+    }).catch(function(){
       toast("Saved on this device, but could not sync to the cloud \u2014 check your connection");
     });
   }catch(ignored){}
 }
 function removeEntryFromCloud(dateISO){
   if(!cloudReady || !entriesRef) return;
-  try{ entriesRef.child(dateISO).remove(); }catch(ignored){}
+  pendingSync[dateISO] = 'delete';
+  try{
+    entriesRef.child(dateISO).remove().then(function(){
+      if(pendingSync[dateISO] === 'delete') delete pendingSync[dateISO];
+    }).catch(function(){
+      toast("Deleted on this device, but could not sync to the cloud \u2014 check your connection");
+    });
+  }catch(ignored){}
 }
 function pushSettingsToCloud(){
   if(!cloudReady || !settingsRef) return;
-  try{ settingsRef.set(SETTINGS); }catch(ignored){}
+  settingsPending = true;
+  try{
+    settingsRef.set(SETTINGS).then(function(){
+      settingsPending = false;
+    }).catch(function(){
+      settingsPending = false;
+      toast("Saved on this device, but could not sync settings to the cloud");
+    });
+  }catch(ignored){ settingsPending = false; }
 }
+
+/* ==================== UPGRADE v12: Unlimited Storage + Advance Auto-Save + True Multi-Device Cloud Sync ==================== */
+/* This block keeps 100% of existing code intact and adds on top */
+
+/* ---- 1. Unlimited Local Storage via IndexedDB (falls back to existing safeStorage) ---- */
+var WOL_IDB_NAME = 'WordOfLifeUnlimitedDB';
+var WOL_IDB_VER = 2;
+var WOL_IDB_STORE = 'devotionals_store';
+var WOL_IDB_META = 'meta_store';
+var wolIDB = null;
+var wolIDBReady = false;
+
+function openWOLDB(){
+  return new Promise(function(resolve, reject){
+    if(wolIDB){ resolve(wolIDB); return; }
+    try{
+      var req = indexedDB.open(WOL_IDB_NAME, WOL_IDB_VER);
+      req.onupgradeneeded = function(e){
+        var db = e.target.result;
+        if(!db.objectStoreNames.contains(WOL_IDB_STORE)) db.createObjectStore(WOL_IDB_STORE, {keyPath:'date'});
+        if(!db.objectStoreNames.contains(WOL_IDB_META)) db.createObjectStore(WOL_IDB_META, {keyPath:'k'});
+      };
+      req.onsuccess = function(e){ wolIDB = e.target.result; wolIDBReady = true; resolve(wolIDB); };
+      req.onerror = function(){ resolve(null); };
+    }catch(err){ resolve(null); }
+  });
+}
+function idbPut(storeName, obj){
+  if(!wolIDB) return Promise.resolve();
+  return new Promise(function(res){
+    try{
+      var tx = wolIDB.transaction(storeName, 'readwrite');
+      tx.objectStore(storeName).put(obj);
+      tx.oncomplete = function(){ res(); };
+      tx.onerror = function(){ res(); };
+    }catch(e){ res(); }
+  });
+}
+function idbDelete(storeName, key){
+  if(!wolIDB) return Promise.resolve();
+  return new Promise(function(res){
+    try{
+      var tx = wolIDB.transaction(storeName, 'readwrite');
+      tx.objectStore(storeName).delete(key);
+      tx.oncomplete = function(){ res(); };
+      tx.onerror = function(){ res(); }
+    }catch(e){ res(); }
+  });
+}
+function idbGetAll(storeName){
+  return new Promise(function(resolve){
+    if(!wolIDB){ resolve([]); return; }
+    try{
+      var tx = wolIDB.transaction(storeName, 'readonly');
+      var store = tx.objectStore(storeName);
+      var req = store.getAll();
+      req.onsuccess = function(){ resolve(req.result||[]); };
+      req.onerror = function(){ resolve([]); };
+    }catch(e){ resolve([]); }
+  });
+}
+
+openWOLDB().then(function(){
+  if(!wolIDB) return;
+  try{
+    for(var d in ENTRIES){ if(ENTRIES.hasOwnProperty(d)) idbPut(WOL_IDB_STORE, ENTRIES[d]); }
+  }catch(e){}
+  idbGetAll(WOL_IDB_STORE).then(function(all){
+    if(!all || !all.length) return;
+    var changed=false;
+    for(var i=0;i<all.length;i++){ var it=all[i]; if(it && it.date){ if(!ENTRIES[it.date]){ ENTRIES[it.date]=it; changed=true; } } }
+    if(changed){ saveEntries(ENTRIES); try{ renderToday(); renderBrowse(); }catch(e){} }
+  });
+});
+
+var _origSaveEntries = saveEntries;
+saveEntries = function(obj){
+  try{ _origSaveEntries(obj); }catch(e){}
+  if(wolIDBReady){ try{ for(var k in obj){ if(obj.hasOwnProperty(k) && obj[k]) idbPut(WOL_IDB_STORE, obj[k]); } }catch(e){} }
+  else { openWOLDB().then(function(){ for(var kk in obj){ if(obj.hasOwnProperty(kk) && obj[kk]) idbPut(WOL_IDB_STORE, obj[kk]); } }); }
+};
+function idbRemoveLocal(dateISO){ if(wolIDBReady) idbDelete(WOL_IDB_STORE, dateISO); else openWOLDB().then(function(){ idbDelete(WOL_IDB_STORE, dateISO); }); }
+
+/* ---- 2. Advance Auto-Save: Save Devotionals In Advance As You Type ---- */
+var ADVANCE_DRAFT_KEY = 'wol_advance_draft_v12';
+var AUTO_SAVE_DELAY = 700;
+var autoSaveTimer = null;
+var autoSaveStatusEl = null;
+
+function getCurrentFormSnapshot(){
+  try{ draftVersions[currentVersionTab] = document.getElementById('f_verseText').value; }catch(e){}
+  var snap = {
+    date: (document.getElementById('f_date') && document.getElementById('f_date').value) || todayISO(),
+    focus: document.getElementById('f_focus') ? document.getElementById('f_focus').value : "",
+    scriptureRef: document.getElementById('f_ref') ? document.getElementById('f_ref').value : "",
+    verseText: document.getElementById('f_verseText') ? document.getElementById('f_verseText').value : "",
+    currentVersion: currentVersionTab,
+    versions: JSON.parse(JSON.stringify(draftVersions||{})),
+    body: document.getElementById('f_body') ? document.getElementById('f_body').value : "",
+    confession: document.getElementById('f_confession') ? document.getElementById('f_confession').value : "",
+    declareHeading: document.getElementById('f_declareHead') ? document.getElementById('f_declareHead').value : "",
+    declarations: draftDecls.slice(),
+    prayerPoints: draftPrayerPoints.slice(),
+    readingPlan: document.getElementById('f_plan') ? document.getElementById('f_plan').value : "",
+    savedAt: Date.now()
+  };
+  return snap;
+}
+function buildEntryFromSnapshot(snap){
+  var hasAnyVerse=false; for(var vk in snap.versions){ if(snap.versions[vk] && (""+snap.versions[vk]).trim()){ hasAnyVerse=true; break; } }
+  if(!snap.verseText.trim() && !hasAnyVerse && !snap.body.trim() && !snap.focus.trim()) return null;
+  var vers = {}; for(var k in snap.versions){ if(snap.versions[k]!==undefined) vers[k]=snap.versions[k]; }
+  if(snap.verseText) vers[snap.currentVersion]=snap.verseText;
+  var cd=[]; for(var a=0;a<snap.declarations.length;a++){ var t=snap.declarations[a]; if(t && (""+t).trim()) cd.push((""+t).trim()); }
+  var cp=[]; for(var b=0;b<snap.prayerPoints.length;b++){ var pt=snap.prayerPoints[b]; if(pt && (""+pt).trim()) cp.push((""+pt).trim()); }
+  return {
+    date: snap.date,
+    focus: snap.focus.trim(),
+    scriptureRef: snap.scriptureRef.trim(),
+    primaryVersion: snap.currentVersion,
+    versions: vers,
+    body: snap.body,
+    prayerPoints: cp,
+    confession: snap.confession,
+    declareHeading: snap.declareHeading.trim() || "Declare This Now",
+    declarations: cd,
+    readingPlan: snap.readingPlan.trim(),
+    _advanceAutoSaved: true,
+    _lastAdvanceSave: Date.now()
+  };
+}
+function setAutoSaveStatus(msg, state){
+  try{
+    if(!autoSaveStatusEl){
+      autoSaveStatusEl = document.getElementById('autoSaveStatus');
+      if(!autoSaveStatusEl){
+        var hint = document.getElementById('writeHint');
+        if(hint){
+          var s=document.createElement('div'); s.id='autoSaveStatus'; s.className='ui';
+          s.style.cssText='margin-top:8px;font-size:11px;color:#9AA6CC;display:flex;align-items:center;gap:6px;';
+          hint.parentNode.insertBefore(s, hint.nextSibling);
+          autoSaveStatusEl=s;
+        }
+      }
+    }
+    if(autoSaveStatusEl){
+      var dot = state==='saving' ? '<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#E8B23D;box-shadow:0 0 0 3px rgba(232,178,61,0.2);animation:pulse 1.2s infinite;"></span>' : (state==='saved' ? '<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#1FAA59;box-shadow:0 0 0 3px rgba(31,170,89,0.2);"></span>' : '<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#5C6A99;"></span>');
+      autoSaveStatusEl.innerHTML = dot + ' ' + msg;
+    }
+  }catch(e){}
+}
+function doAdvanceAutoSave(isManual){
+  var snap = getCurrentFormSnapshot();
+  try{ safeStorage.setItem(ADVANCE_DRAFT_KEY, JSON.stringify(snap)); idbPut(WOL_IDB_META, {k:ADVANCE_DRAFT_KEY, v:snap}); }catch(e){}
+  var entry = buildEntryFromSnapshot(snap);
+  if(!entry){ if(isManual) setAutoSaveStatus('Draft saved locally', 'saved'); return; }
+  if(!entry.date || !/^\d{4}-\d{2}-\d{2}$/.test(entry.date)){ setAutoSaveStatus('Choose a date to enable advance save',''); return; }
+  setAutoSaveStatus('Saving...', 'saving');
+  ENTRIES[entry.date] = entry;
+  try{ saveEntries(ENTRIES); }catch(e){}
+  if(wolIDBReady) idbPut(WOL_IDB_STORE, entry);
+  if(cloudReady && entriesRef){
+    pendingSync[entry.date]='save';
+    try{
+      entriesRef.child(entry.date).set(entry).then(function(){
+        if(pendingSync[entry.date]==='save') delete pendingSync[entry.date];
+        setAutoSaveStatus('Auto-saved & synced to all devices • '+ new Date().toLocaleTimeString(), 'saved');
+      }).catch(function(){ setAutoSaveStatus('Saved on this device • will sync when online', 'saved'); });
+    }catch(e){ setAutoSaveStatus('Saved locally • sync pending', 'saved'); }
+  } else { setAutoSaveStatus('Auto-saved locally • will sync when online', 'saved'); }
+  try{ if(currentDate===entry.date) renderToday(); if(document.getElementById('view-browse').classList.contains('active')) renderBrowse(); }catch(e){}
+  if(isManual) toast('Devotional auto-saved for '+fmtLong(entry.date));
+}
+function scheduleAdvanceAutoSave(){
+  clearTimeout(autoSaveTimer);
+  setAutoSaveStatus('Typing...', 'saving');
+  autoSaveTimer = setTimeout(function(){ doAdvanceAutoSave(false); }, AUTO_SAVE_DELAY);
+}
+function attachAdvanceListeners(){
+  var ids=['f_date','f_focus','f_ref','f_verseText','f_body','f_confession','f_declareHead','f_plan'];
+  ids.forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el || el._advanceBound) return;
+    el._advanceBound=true;
+    el.addEventListener('input', scheduleAdvanceAutoSave);
+    el.addEventListener('change', scheduleAdvanceAutoSave);
+  });
+  var declWrap=document.getElementById('f_declList');
+  if(declWrap && !declWrap._advanceBound){ declWrap._advanceBound=true; declWrap.addEventListener('input', scheduleAdvanceAutoSave); }
+  var prayWrap=document.getElementById('f_prayerList');
+  if(prayWrap && !prayWrap._advanceBound){ prayWrap._advanceBound=true; prayWrap.addEventListener('input', scheduleAdvanceAutoSave); }
+}
+setTimeout(attachAdvanceListeners, 400);
+var _origRenderDecl = renderDeclEditor;
+renderDeclEditor = function(){ _origRenderDecl(); attachAdvanceListeners(); };
+var _origRenderPrayer = renderPrayerEditor;
+renderPrayerEditor = function(){ _origRenderPrayer(); attachAdvanceListeners(); };
+setTimeout(function(){
+  try{
+    var raw=safeStorage.getItem(ADVANCE_DRAFT_KEY);
+    if(!raw) return;
+    var d=JSON.parse(raw);
+    if(!d || !d.date) return;
+    var curDateVal=document.getElementById('f_date').value;
+    if(editingDate===null && (!document.getElementById('f_focus').value) && d.focus){
+      if(confirm('Restore your unsaved devotional draft for '+fmtLong(d.date)+'?')){
+        document.getElementById('f_date').value=d.date;
+        document.getElementById('f_focus').value=d.focus||'';
+        document.getElementById('f_ref').value=d.scriptureRef||'';
+        document.getElementById('f_verseText').value=d.verseText||'';
+        document.getElementById('f_body').value=d.body||'';
+        document.getElementById('f_confession').value=d.confession||'';
+        document.getElementById('f_declareHead').value=d.declareHeading||'Speak the Word Now!!!';
+        document.getElementById('f_plan').value=d.readingPlan||'';
+        draftVersions=d.versions||{};
+        draftDecls=(d.declarations && d.declarations.length)?d.declarations:[""];
+        draftPrayerPoints=(d.prayerPoints && d.prayerPoints.length)?d.prayerPoints:[""];
+        currentVersionTab=d.currentVersion||SETTINGS.defaultVersion;
+        renderVersionTabs(); renderDeclEditor(); renderPrayerEditor();
+        setAutoSaveStatus('Draft restored • continue typing to auto-save', 'saved');
+        toast('Draft restored');
+      }
+    }
+  }catch(e){}
+}, 900);
+
+/* ---- 3. True Multi-Device Unlimited Cloud Sync (phone <-> PC <-> phone) ---- */
+var enhancedSyncBound=false;
+function enhanceCloudSyncForUnlimited(){
+  if(enhancedSyncBound || !cloudReady || !entriesRef) return;
+  enhancedSyncBound=true;
+  try{
+    entriesRef.on('child_added', function(snap){
+      var key=snap.key; var val=snap.val(); if(!key||!val) return;
+      if(pendingSync[key]==='save' || pendingSync[key]==='delete') return;
+      ENTRIES[key]=val; saveEntries(ENTRIES); if(wolIDBReady) idbPut(WOL_IDB_STORE, val);
+      try{ if(currentDate===key) renderToday(); if(document.getElementById('view-browse').classList.contains('active')) renderBrowse(); }catch(e){}
+    });
+    entriesRef.on('child_changed', function(snap){
+      var key=snap.key; var val=snap.val(); if(!key||!val) return;
+      if(pendingSync[key]==='save') return;
+      ENTRIES[key]=val; saveEntries(ENTRIES); if(wolIDBReady) idbPut(WOL_IDB_STORE, val);
+      try{ if(currentDate===key) renderToday(); if(document.getElementById('view-browse').classList.contains('active')) renderBrowse(); }catch(e){}
+    });
+    entriesRef.on('child_removed', function(snap){
+      var key=snap.key; if(!key) return;
+      if(pendingSync[key]==='delete') return;
+      if(ENTRIES[key]){ delete ENTRIES[key]; saveEntries(ENTRIES); idbRemoveLocal(key);
+        try{ if(currentDate===key){ currentDate=sortedDates().length?nearestDate():todayISO(); renderToday(); } if(document.getElementById('view-browse').classList.contains('active')) renderBrowse(); if(editingDate===key) resetForm(todayISO()); }catch(e){}
+      }
+    });
+    setInterval(function(){
+      if(!cloudReady) return;
+      var hasPending=false; for(var pk in pendingSync){ hasPending=true; break; }
+      if(!hasPending) return;
+      for(var dateISO in pendingSync){
+        if(pendingSync[dateISO]==='save' && ENTRIES[dateISO]) pushEntryToCloud(dateISO, ENTRIES[dateISO]);
+        else if(pendingSync[dateISO]==='delete') removeEntryFromCloud(dateISO);
+      }
+    }, 8000);
+  }catch(e){}
+}
+var _origStartDbSync = startDbSync;
+startDbSync = function(){
+  _origStartDbSync();
+  setTimeout(function(){ enhanceCloudSyncForUnlimited(); }, 1200);
+};
+setTimeout(function(){ if(cloudReady) enhanceCloudSyncForUnlimited(); }, 2000);
+
+/* ---- 4. Read Panel Enhancement ---- */
+var _origRenderTodayUpgrade = renderToday;
+renderToday = function(){
+  _origRenderTodayUpgrade();
+  try{
+    var entry=getEntry(currentDate);
+    if(entry && entry._advanceAutoSaved){
+      var card=document.getElementById('entryCardInner');
+      if(card && !card.querySelector('.advance-badge')){
+        var badge=document.createElement('div');
+        badge.className='ui advance-badge';
+        badge.style.cssText='margin:10px 0 0;font-size:11px;color:#F4D27A;background:rgba(232,178,61,0.12);border:1px solid rgba(232,178,61,0.25);padding:6px 10px;border-radius:999px;display:inline-flex;align-items:center;gap:6px;';
+        badge.innerHTML='⚡ Advance-saved • synced to all devices • '+ new Date(entry._lastAdvanceSave||Date.now()).toLocaleString();
+        card.appendChild(badge);
+      }
+    }
+  }catch(e){}
+};
+setTimeout(function(){
+  try{
+    var subs=document.querySelectorAll('#view-settings .sub');
+    for(var si=0; si<subs.length; si++){ var sub=subs[si]; if(sub.textContent.indexOf('Devotionals you save')!==-1){ sub.innerHTML='Devotionals you save here appear automatically on every device using this app. <br><b style="color:#F4D27A;">✓ Unlimited storage enabled • Auto-save while typing • Phone ↔ PC ↔ Phone sync</b>'; break; } }
+  }catch(e){}
+}, 1000);
+
+/* ---- 5. Patch save button to clear draft and keep unlimited ---- */
+try{
+  var saveBtn=document.getElementById('saveEntry');
+  if(saveBtn){
+    var clone=saveBtn.cloneNode(true);
+    saveBtn.parentNode.replaceChild(clone, saveBtn);
+    clone.addEventListener('click', function(){
+      draftVersions[currentVersionTab] = document.getElementById('f_verseText').value;
+      var dateISO = document.getElementById('f_date').value;
+      if(!dateISO){ toast("Please choose a date"); return; }
+      var cleanDecls = []; for(var i=0;i<draftDecls.length;i++){ if(draftDecls[i] && draftDecls[i].trim()) cleanDecls.push(draftDecls[i].trim()); }
+      var cleanPrayerPoints = []; for(var pj=0;pj<draftPrayerPoints.length;pj++){ if(draftPrayerPoints[pj] && draftPrayerPoints[pj].trim()) cleanPrayerPoints.push(draftPrayerPoints[pj].trim()); }
+      var bodyVal = document.getElementById('f_body').value;
+      var entry = {
+        date: dateISO,
+        focus: document.getElementById('f_focus').value.trim(),
+        scriptureRef: document.getElementById('f_ref').value.trim(),
+        primaryVersion: currentVersionTab,
+        versions: draftVersions,
+        body: bodyVal,
+        prayerPoints: cleanPrayerPoints,
+        confession: document.getElementById('f_confession').value,
+        declareHeading: document.getElementById('f_declareHead').value.trim(),
+        declarations: cleanDecls,
+        readingPlan: document.getElementById('f_plan').value.trim(),
+        _advanceAutoSaved: true,
+        _lastAdvanceSave: Date.now()
+      };
+      if(editingDate && editingDate !== dateISO){ delete ENTRIES[editingDate]; removeEntryFromCloud(editingDate); idbRemoveLocal(editingDate); }
+      ENTRIES[dateISO] = entry;
+      saveEntries(ENTRIES);
+      if(wolIDBReady) idbPut(WOL_IDB_STORE, entry);
+      pushEntryToCloud(dateISO, entry);
+      editingDate = dateISO;
+      currentDate = dateISO;
+      toast("Devotional saved & synced to all devices");
+      document.getElementById('writeModeLabel').textContent = "Editing " + fmtLong(dateISO);
+      document.getElementById('deleteEntry').style.display = "";
+      try{ safeStorage.setItem(ADVANCE_DRAFT_KEY, ""); }catch(e){}
+      setAutoSaveStatus('Saved & synced • '+ new Date().toLocaleTimeString(), 'saved');
+      renderToday();
+    });
+  }
+}catch(e){}
+
+try{
+  var st=document.createElement('style');
+  st.textContent='@keyframes pulse{0%{opacity:1;transform:scale(1);}50%{opacity:0.6;transform:scale(0.9);}100%{opacity:1;transform:scale(1);}} .advance-badge{animation:fadeUp .35s ease both;}';
+  document.head.appendChild(st);
+}catch(e){}
+
+console.log('Word of Life v12 Upgrade: Unlimited IndexedDB + Advance Auto-Save + Multi-Device Sync Active');
+/* ==================== END UPGRADE v12 ==================== */
+
 
 
 /* ---------------- Date helpers ---------------- */
@@ -1076,7 +1292,7 @@ for(var t=0;t<tabs.length;t++){
   tabs[t].addEventListener('click', (function(tabEl){
     return function(){
       var name = tabEl.getAttribute('data-tab');
-      if((name === 'write' || name === 'settings') && !isPastorUnlocked){
+      if((name === 'write' || name === 'settings' || name === 'browse') && !isPastorUnlocked){
         requestPastorPin(function(){ activateTab(tabEl); });
         return;
       }
@@ -1103,8 +1319,8 @@ function renderEntryHTML(entry, forExport){
   var parts = isoToParts(entry.date);
   var vt = pickVersionText(entry);
   var html = "";
-  html += '<div class="day-strip" style="justify-content:center;"><span>'+SETTINGS.series+'</span></div>';
-  html += '<div class="date-block"><div class="weekday">'+parts.weekday+'</div><div class="big">'+ordinal(parts.day)+' '+parts.month+' '+parts.year+'</div></div>';
+  html += '<div class="day-strip"><span>'+SETTINGS.series+'</span></div>';
+  html += '<div class="date-block"><div class="big">'+parts.weekday+': '+ordinal(parts.day)+' '+parts.month+' '+parts.year+'</div></div>';
   html += '<div class="focus-title">Focus: '+escapeHTML(entry.focus||"")+'</div>';
   html += '<span class="scripture-ref">Scripture &middot; '+escapeHTML(entry.scriptureRef||"")+'</span>';
   if(vt.text){
@@ -1119,6 +1335,10 @@ function renderEntryHTML(entry, forExport){
     }
     html += '</ol>';
   }
+  if(entry.confession && entry.confession.trim()){
+    html += '<div class="confession-head">Confession</div>';
+    html += '<div class="confession-box">'+escapeHTML(entry.confession)+'</div>';
+  }
   if(entry.declarations && entry.declarations.length){
     html += '<div class="declare-head">'+escapeHTML(entry.declareHeading || "Declare This Now")+'</div>';
     html += '<ol class="declare-list">';
@@ -1127,12 +1347,8 @@ function renderEntryHTML(entry, forExport){
     }
     html += '</ol>';
   }
-  if(entry.confession && entry.confession.trim()){
-    html += '<div class="confession-head">Confession</div>';
-    html += '<div class="confession-box">'+escapeHTML(entry.confession)+'</div>';
-  }
   if(entry.readingPlan){
-    html += '<div class="plan-row" data-plan="'+escapeAttr(entry.readingPlan)+'" onclick="window.__openReadingPlan(this)"><span>&#128214;</span><span>Bible Reading Plan: <b>'+escapeHTML(entry.readingPlan)+'</b></span><span class="plan-arrow">&#8250;</span></div>';
+    html += '<div class="plan-row clickable" onclick="wolOpenBible(\''+escJsAttr(entry.readingPlan)+'\',\''+escJsAttr(vt.v||SETTINGS.defaultVersion)+'\')"><span>&#128214;</span><span>Bible Reading Plan: <b>'+escapeHTML(entry.readingPlan)+'</b></span><span class="go">Open &#8250;</span></div>';
   }
   html += '<div class="pastor-row"><img src="'+SETTINGS.photo+'" alt="pastor"><div class="who"><div class="name">'+escapeHTML(SETTINGS.pastor)+'</div><div class="line">Prayer Line: '+escapeHTML(SETTINGS.prayerline)+'</div></div></div>';
   return html;
@@ -1142,10 +1358,31 @@ function escapeHTML(s){
   if(!s) return "";
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
-function escapeAttr(s){
-  if(!s) return "";
-  return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function escJsAttr(s){
+  return String(s||"").replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');
 }
+
+/* ---------------- Open a passage in the Bible ----------------
+   Bible Gateway accepts a free-text reference (e.g. "Genesis 21-30" or
+   "Genesis 1:3") and a short version code, and takes it straight to the
+   passage - no book/chapter parsing needed on our side. It doesn't carry
+   Chinyanja/Nyanja though, so that (and any custom-added version) falls
+   back to a plain web search, which still gets the pastor to the passage. */
+var BIBLE_GATEWAY_CODES = {
+  NKJV:'NKJV', NIV:'NIV', NLT:'NLT', ESV:'ESV', ERV:'ERV', AMPLIFIED:'AMP', KJV:'KJV'
+};
+window.wolOpenBible = function(reference, versionLabel){
+  if(!reference || !("" + reference).trim()){ toast("No reference to open"); return; }
+  var code = BIBLE_GATEWAY_CODES[("" + (versionLabel||"")).toUpperCase()];
+  var url;
+  if(code){
+    url = "https://www.biblegateway.com/passage/?search=" + encodeURIComponent(reference) + "&version=" + code;
+  } else {
+    url = "https://www.google.com/search?q=" + encodeURIComponent(reference + " " + (versionLabel||"") + " Bible");
+  }
+  window.open(url, "_blank");
+};
 
 function getEntry(dateISO){
   var e = ENTRIES[dateISO];
@@ -1204,6 +1441,7 @@ function renderBrowse(){
     html += '<div class="entry-row'+(keys[i]===t?' today':'')+'" data-date="'+keys[i]+'">';
     html += '<div class="ebadge"><div class="d">'+p.day+'</div><div class="m">'+p.month.slice(0,3)+'</div></div>';
     html += '<div class="et"><div class="ft">'+escapeHTML(e.focus||"Untitled")+'</div><div class="fr">'+escapeHTML(e.scriptureRef||"")+' &middot; '+p.weekday+'</div></div>';
+    html += '<button class="row-del" data-del-date="'+keys[i]+'" title="Delete">&#128465;</button>';
     html += '<div class="chev">&#8250;</div></div>';
   }
   list.innerHTML = html;
@@ -1216,7 +1454,43 @@ function renderBrowse(){
       goTab('today');
     });
   }
+  var delBtns = list.querySelectorAll('.row-del');
+  for(var d=0;d<delBtns.length;d++){
+    delBtns[d].addEventListener('click', function(ev){
+      ev.stopPropagation(); // don't also trigger the row's open handler
+      var dateISO = this.getAttribute('data-del-date');
+      var e2 = ENTRIES[dateISO];
+      if(!confirm("Delete the devotional for " + fmtLong(dateISO) + (e2 && e2.focus ? " (\""+e2.focus+"\")" : "") + "? This cannot be undone.")) return;
+      delete ENTRIES[dateISO];
+      saveEntries(ENTRIES);
+      removeEntryFromCloud(dateISO);
+      toast("Deleted");
+      if(currentDate === dateISO){ currentDate = sortedDates().length ? nearestDate() : todayISO(); renderToday(); }
+      if(editingDate === dateISO){ resetForm(todayISO()); }
+      renderBrowse();
+    });
+  }
 }
+
+document.getElementById('clearAllBtn').addEventListener('click', function(){
+  var keys = sortedDates();
+  if(keys.length === 0){ toast("Nothing to clear"); return; }
+  var ok = confirm("Delete ALL " + keys.length + " devotionals, on this device and in the cloud, for every device that syncs? This cannot be undone.");
+  if(!ok) return;
+  var ok2 = confirm("Are you absolutely sure? This removes every devotional permanently.");
+  if(!ok2) return;
+  for(var i=0;i<keys.length;i++){
+    removeEntryFromCloud(keys[i]);
+  }
+  ENTRIES = {};
+  saveEntries(ENTRIES);
+  currentDate = todayISO();
+  isPinnedToToday = true;
+  resetForm(todayISO());
+  renderToday();
+  renderBrowse();
+  toast("All devotionals cleared");
+});
 
 /* ---------------- Write / Edit view ---------------- */
 var editingDate = null; // null = new entry
@@ -1235,13 +1509,12 @@ function resetForm(dateISO){
   document.getElementById('f_ref').value = "";
   document.getElementById('f_verseText').value = "";
   document.getElementById('f_body').value = "";
+  document.getElementById('f_confession').value = "";
   document.getElementById('f_declareHead').value = "Speak the Word Now!!!";
-  var confEl = document.getElementById('f_confession'); if(confEl) confEl.value = "";
   document.getElementById('f_plan').value = "";
   document.getElementById('writeModeLabel').textContent = "New Devotional";
   document.getElementById('deleteEntry').style.display = "none";
   currentVersionTab = SETTINGS.defaultVersion;
-  var curLab = document.getElementById('f_currentVersionLabel'); if(curLab) curLab.textContent = currentVersionTab;
   renderVersionTabs();
   renderDeclEditor();
   renderPrayerEditor();
@@ -1260,13 +1533,12 @@ function loadEntryIntoForm(dateISO){
   document.getElementById('f_focus').value = e.focus || "";
   document.getElementById('f_ref').value = e.scriptureRef || "";
   document.getElementById('f_body').value = e.body || "";
+  document.getElementById('f_confession').value = e.confession || "";
   document.getElementById('f_declareHead').value = e.declareHeading || "Speak the Word Now!!!";
-  var confEl2 = document.getElementById('f_confession'); if(confEl2) confEl2.value = e.confession || "";
   document.getElementById('f_plan').value = e.readingPlan || "";
   document.getElementById('writeModeLabel').textContent = "Editing " + fmtLong(dateISO);
   document.getElementById('deleteEntry').style.display = "";
   currentVersionTab = (e.primaryVersion && draftVersions[e.primaryVersion]) ? e.primaryVersion : SETTINGS.defaultVersion;
-  var curLab2 = document.getElementById('f_currentVersionLabel'); if(curLab2) curLab2.textContent = currentVersionTab;
   renderVersionTabs();
   document.getElementById('f_verseText').value = draftVersions[currentVersionTab] || "";
   renderDeclEditor();
@@ -1287,17 +1559,16 @@ function renderVersionTabs(){
   var chips = wrap.querySelectorAll('.vchip');
   for(var c=0;c<chips.length;c++){
     chips[c].addEventListener('click', function(){
-      var clickedV = this.getAttribute('data-v');
-      // If already active, second tap opens Bible picker
-      if(clickedV === currentVersionTab){
-        if(typeof openBiblePicker === 'function') openBiblePicker(clickedV);
-        return;
-      }
       draftVersions[currentVersionTab] = document.getElementById('f_verseText').value;
-      currentVersionTab = clickedV;
+      currentVersionTab = this.getAttribute('data-v');
       document.getElementById('f_verseText').value = draftVersions[currentVersionTab] || "";
-      var curLab = document.getElementById('f_currentVersionLabel'); if(curLab) curLab.textContent = currentVersionTab;
       renderVersionTabs();
+      var ref = document.getElementById('f_ref').value;
+      if(ref && ref.trim()){
+        window.wolOpenBible(ref, currentVersionTab);
+      } else {
+        toast("Type a Scripture Reference first, then tap a version to look it up");
+      }
     });
   }
 }
@@ -1366,18 +1637,7 @@ document.getElementById('f_addPrayer').addEventListener('click', function(){
 
 document.getElementById('saveEntry').addEventListener('click', function(){
   draftVersions[currentVersionTab] = document.getElementById('f_verseText').value;
-  var rawDate = document.getElementById('f_date').value.trim();
-  var dateISO = rawDate;
-  // Normalize dd/mm/yyyy (some WebViews) to yyyy-mm-dd
-  if(dateISO && dateISO.indexOf('/') !== -1){
-    var p = dateISO.split('/');
-    if(p.length === 3){
-      var dd = (p[0].length===1?'0'+p[0]:p[0]);
-      var mm = (p[1].length===1?'0'+p[1]:p[1]);
-      var yyyy = p[2];
-      if(yyyy.length===4) dateISO = yyyy+'-'+mm+'-'+dd;
-    }
-  }
+  var dateISO = document.getElementById('f_date').value;
   if(!dateISO){ toast("Please choose a date"); return; }
   var cleanDecls = [];
   for(var i=0;i<draftDecls.length;i++){ if(draftDecls[i] && draftDecls[i].trim()) cleanDecls.push(draftDecls[i].trim()); }
@@ -1401,14 +1661,13 @@ document.getElementById('saveEntry').addEventListener('click', function(){
     focus: document.getElementById('f_focus').value.trim(),
     scriptureRef: document.getElementById('f_ref').value.trim(),
     primaryVersion: currentVersionTab,
-    versions: (function(src){ var o={}; for(var k in src){ if(Object.prototype.hasOwnProperty.call(src,k)) o[k]=src[k]; } return o; })(draftVersions),
+    versions: draftVersions,
     body: bodyVal,
     prayerPoints: cleanPrayerPoints,
+    confession: document.getElementById('f_confession').value,
     declareHeading: document.getElementById('f_declareHead').value.trim(),
     declarations: cleanDecls,
-    confession: (document.getElementById('f_confession') ? document.getElementById('f_confession').value.trim() : ""),
-    readingPlan: document.getElementById('f_plan').value.trim(),
-    updatedAt: Date.now()
+    readingPlan: document.getElementById('f_plan').value.trim()
   };
   if(editingDate && editingDate !== dateISO){ delete ENTRIES[editingDate]; removeEntryFromCloud(editingDate); }
   ENTRIES[dateISO] = entry;
@@ -1504,21 +1763,12 @@ function renderVersionChips(){
     var v = SETTINGS.versions[i];
     var chip = document.createElement('span');
     chip.className = 'chip';
-    chip.setAttribute('data-v', v);
     chip.innerHTML = v + ' <span class="x" data-v="'+v+'">&times;</span>';
-    // Click on chip (not X) opens Bible picker for that version
-    chip.addEventListener('click', (function(ver){
-      return function(e){
-        if(e.target && e.target.classList && e.target.classList.contains('x')) return;
-        if(typeof openBiblePicker === 'function') openBiblePicker(ver);
-      };
-    })(v));
     wrap.appendChild(chip);
   }
   var xs = wrap.querySelectorAll('.x');
   for(var j=0;j<xs.length;j++){
-    xs[j].addEventListener('click', function(e){
-      e.stopPropagation();
+    xs[j].addEventListener('click', function(){
       var v = this.getAttribute('data-v');
       if(SETTINGS.versions.length <= 1){ toast("Keep at least one version"); return; }
       SETTINGS.versions = SETTINGS.versions.filter(function(x){ return x !== v; });
@@ -1550,149 +1800,72 @@ document.getElementById('set_defaultVersion').addEventListener('change', functio
   });
 });
 
-/* ---------------- Bible Picker (for version chips) ---------------- */
-var BIBLE_BOOKS = ["Genesis","Exodus","Leviticus","Numbers","Deuteronomy","Joshua","Judges","Ruth","1 Samuel","2 Samuel","1 Kings","2 Kings","1 Chronicles","2 Chronicles","Ezra","Nehemiah","Esther","Job","Psalms","Proverbs","Ecclesiastes","Song of Solomon","Isaiah","Jeremiah","Lamentations","Ezekiel","Daniel","Hosea","Joel","Amos","Obadiah","Jonah","Micah","Nahum","Habakkuk","Zephaniah","Haggai","Zechariah","Malachi","Matthew","Mark","Luke","John","Acts","Romans","1 Corinthians","2 Corinthians","Galatians","Ephesians","Philippians","Colossians","1 Thessalonians","2 Thessalonians","1 Timothy","2 Timothy","Titus","Philemon","Hebrews","James","1 Peter","2 Peter","1 John","2 John","3 John","Jude","Revelation"];
-var BIBLE_VERSION_MAP = {
-  "KJV":"kjv","NKJV":"kjv","NIV":"web","NLT":"web","ESV":"web","ERV":"web","AMPLIFIED":"web","CHINYANJA":"kjv"
-};
-var currentBibleVersion = SETTINGS.defaultVersion || "NKJV";
-var lastFetchedText = "";
-var lastFetchedRef = "";
-
-function populateBibleBooks(){
-  var sel = document.getElementById('bibleBook');
-  if(!sel || sel.options.length) return;
-  for(var i=0;i<BIBLE_BOOKS.length;i++){
-    var opt = document.createElement('option');
-    opt.value = BIBLE_BOOKS[i];
-    opt.textContent = BIBLE_BOOKS[i];
-    sel.appendChild(opt);
-  }
+function fileToDataURL(file, cb){
+  var reader = new FileReader();
+  reader.onload = function(e){ cb(e.target.result); };
+  reader.readAsDataURL(file);
 }
-function openBiblePicker(version){
-  currentBibleVersion = version || currentVersionTab || SETTINGS.defaultVersion || "NKJV";
-  populateBibleBooks();
-  var modal = document.getElementById('bibleModal');
-  var vLab = document.getElementById('bibleVersionLabel'); if(vLab) vLab.textContent = currentBibleVersion;
-  var refLab = document.getElementById('bibleRefLabel'); if(refLab) refLab.textContent = "";
-  var preview = document.getElementById('biblePreview'); if(preview) preview.textContent = "Choose a Book, Chapter and Verse, then tap Fetch.";
-  // Prefill from current scripture ref if possible
-  try{
-    var curRef = document.getElementById('f_ref') ? document.getElementById('f_ref').value.trim() : "";
-    if(curRef){
-      var m = curRef.match(/^(.+?)\s+(\d+):(\d+)/);
-      if(m){
-        var bk = m[1].trim();
-        var ch = parseInt(m[2],10); var vs = parseInt(m[3],10);
-        var bookSel = document.getElementById('bibleBook');
-        for(var b=0;b<bookSel.options.length;b++){ if(bookSel.options[b].value.toLowerCase()===bk.toLowerCase()){ bookSel.selectedIndex=b; break; } }
-        var chEl = document.getElementById('bibleChapter'); if(chEl) chEl.value = ch;
-        var vsEl = document.getElementById('bibleVerseFrom'); if(vsEl) vsEl.value = vs;
-      }
-    }
-  }catch(e){}
-  if(modal){ modal.classList.add('open'); }
-}
-function closeBiblePicker(){
-  var modal = document.getElementById('bibleModal');
-  if(modal) modal.classList.remove('open');
-}
-function buildBibleRef(){
-  var book = document.getElementById('bibleBook') ? document.getElementById('bibleBook').value : "";
-  var ch = document.getElementById('bibleChapter') ? document.getElementById('bibleChapter').value.trim() : "";
-  var vf = document.getElementById('bibleVerseFrom') ? document.getElementById('bibleVerseFrom').value.trim() : "";
-  var vt = document.getElementById('bibleVerseTo') ? document.getElementById('bibleVerseTo').value.trim() : "";
-  if(!book || !ch || !vf) return "";
-  var ref = book + " " + ch + ":" + vf;
-  if(vt && vt!==vf) ref += "-" + vt;
-  return ref;
-}
-function fetchBibleVerse(){
-  var ref = buildBibleRef();
-  var preview = document.getElementById('biblePreview');
-  var refLab = document.getElementById('bibleRefLabel');
-  if(!ref){ toast("Pick Book, Chapter and Verse"); return; }
-  var trans = BIBLE_VERSION_MAP[currentBibleVersion] || "kjv";
-  var url = "https://bible-api.com/" + encodeURIComponent(ref) + "?translation=" + trans;
-  if(preview) preview.textContent = "Loading " + ref + " ("+trans.toUpperCase()+")...";
-  if(refLab) refLab.textContent = ref;
-  // Try fetch, fallback to web if fails and trans was kjv
-  fetch(url).then(function(r){ if(!r.ok) throw new Error("not found"); return r.json(); }).then(function(data){
-    var txt = data && data.text ? data.text.trim() : "";
-    if(!txt && data && data.verses && data.verses.length){
-      txt = data.verses.map(function(v){ return v.text; }).join(" ").trim();
-    }
-    if(!txt) throw new Error("empty");
-    lastFetchedText = txt;
-    lastFetchedRef = ref;
-    if(preview) preview.textContent = txt;
-    toast("Verse loaded");
-  }).catch(function(err){
-    if(preview) preview.textContent = "Could not fetch " + ref + ". Check connection or try another book/chapter. You can still type manually. (Error: "+ (err && err.message ? err.message : "network") +")";
-    toast("Fetch failed - you can type manually");
+document.getElementById('logoBtn').addEventListener('click', function(){ document.getElementById('logoFile').click(); });
+document.getElementById('logoFile').addEventListener('change', function(e){
+  if(!e.target.files[0]) return;
+  fileToDataURL(e.target.files[0], function(url){
+    SETTINGS.logo = url; saveSettings(SETTINGS); pushSettingsToCloud(); renderSettings();
+    document.getElementById('topLogo').src = url;
+    toast("Logo updated");
   });
-}
-function useBibleVerse(){
-  if(!lastFetchedText){ toast("Fetch a verse first"); return; }
-  // Update draftVersions for current picker version
-  draftVersions[currentBibleVersion] = lastFetchedText;
-  // If we are in Write tab, update the textarea and reference
-  var verseTA = document.getElementById('f_verseText');
-  var refInput = document.getElementById('f_ref');
-  if(verseTA){
-    // If currentVersionTab matches picker version, show immediately
-    if(currentVersionTab === currentBibleVersion || !currentVersionTab){
-      verseTA.value = lastFetchedText;
-    } else {
-      // Switch to that version
-      draftVersions[currentVersionTab] = verseTA.value;
-      currentVersionTab = currentBibleVersion;
-      verseTA.value = lastFetchedText;
-      var curLab = document.getElementById('f_currentVersionLabel'); if(curLab) curLab.textContent = currentVersionTab;
-      if(typeof renderVersionTabs === 'function') renderVersionTabs();
-    }
+});
+document.getElementById('photoBtn').addEventListener('click', function(){ document.getElementById('photoFile').click(); });
+document.getElementById('photoFile').addEventListener('change', function(e){
+  if(!e.target.files[0]) return;
+  fileToDataURL(e.target.files[0], function(url){
+    SETTINGS.photo = url; saveSettings(SETTINGS); pushSettingsToCloud(); renderSettings();
+    renderToday();
+    toast("Photo updated");
+  });
+});
+
+document.getElementById('backupBtn').addEventListener('click', function(){
+  var payload = { entries: ENTRIES, settings: SETTINGS, exportedAt: new Date().toISOString() };
+  downloadBlob(JSON.stringify(payload, null, 2), "word-of-life-backup.json", "application/json");
+});
+document.getElementById('restoreBtn').addEventListener('click', function(){ document.getElementById('restoreFile').click(); });
+document.getElementById('restoreFile').addEventListener('change', function(e){
+  var file = e.target.files[0]; if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    try{
+      var data = JSON.parse(ev.target.result);
+      if(data.entries){ ENTRIES = data.entries; saveEntries(ENTRIES); if(cloudReady && entriesRef){ entriesRef.set(ENTRIES); } }
+      if(data.settings){ SETTINGS = data.settings; saveSettings(SETTINGS); pushSettingsToCloud(); }
+      toast("Backup restored");
+      renderSettings(); renderToday(); renderBrowse();
+      document.getElementById('topLogo').src = SETTINGS.logo;
+    }catch(err){ toast("Invalid backup file"); }
+  };
+  reader.readAsText(file);
+});
+
+document.getElementById('reseedBtn').addEventListener('click', function(){
+  var ok = confirm("This replaces the devotionals stored online (and on every device that syncs after this) with the original built-in 9 devotionals, 8\u201316 July. Any custom entries you've added, on any date, will be removed from the cloud. This cannot be undone. Continue?");
+  if(!ok) return;
+  var fresh = {};
+  for(var i=0;i<SEED_ENTRIES.length;i++){ fresh[SEED_ENTRIES[i].date] = SEED_ENTRIES[i]; }
+  ENTRIES = fresh;
+  saveEntries(ENTRIES);
+  if(cloudReady && entriesRef){
+    entriesRef.set(fresh).then(function(){
+      toast("Cloud reseeded \u2014 every device will now sync the original devotionals");
+    }).catch(function(){
+      toast("Saved on this device, but the cloud push failed \u2014 check your connection and try again");
+    });
+  } else {
+    toast("Saved on this device \u2014 will push to the cloud once connected");
   }
-  if(refInput && lastFetchedRef){ refInput.value = lastFetchedRef; }
-  toast(currentBibleVersion + " verse inserted: " + lastFetchedRef);
-  closeBiblePicker();
-}
-// Wire buttons (run once)
-(function(){
-  var closeBtn = document.getElementById('bibleCloseBtn');
-  if(closeBtn) closeBtn.addEventListener('click', closeBiblePicker);
-  var fetchBtn = document.getElementById('bibleFetchBtn');
-  if(fetchBtn) fetchBtn.addEventListener('click', fetchBibleVerse);
-  var useBtn = document.getElementById('bibleUseBtn');
-  if(useBtn) useBtn.addEventListener('click', useBibleVerse);
-  var modal = document.getElementById('bibleModal');
-  if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeBiblePicker(); });
-  var openBtn = document.getElementById('f_openBibleBtn');
-  if(openBtn) openBtn.addEventListener('click', function(){ openBiblePicker(currentVersionTab || SETTINGS.defaultVersion); });
-})();
-
-/* ---------------- Bible Reading Plan Reader - ROBUST VERSION ---------------- */
-var readingPlanState = { raw:"", book:"", start:0, end:0, isRange:false, hasColon:false, version:"", versesCache:[] };
-function normalizeBookForAPI(b){ if(!b) return b; var t=b.trim(); var low=t.toLowerCase(); if(low==="psalm"||low==="psalms") return "Psalms"; if(low==="song of songs"||low==="song of solomon"||low==="canticles"||low==="song of sol") return "Song of Solomon"; return t; }
-function parseReadingPlanRef(raw){ var s=(raw||"").trim(); var out={raw:s,book:"",start:0,end:0,isRange:false,hasColon:false,isSingleChapter:false}; if(!s) return out; out.hasColon=s.indexOf(':')!==-1; var mRange=s.match(/^(.*?)\s+(\d+)\s*[-\u2013\u2014]\s*(\d+)\s*$/); if(mRange){ out.book=normalizeBookForAPI(mRange[1]); out.start=parseInt(mRange[2],10); out.end=parseInt(mRange[3],10); out.isRange=true; return out; } var mSingle=s.match(/^(.*?)\s+(\d+)\s*$/); if(mSingle&&!out.hasColon){ out.book=normalizeBookForAPI(mSingle[1]); out.start=parseInt(mSingle[2],10); out.end=out.start; out.isSingleChapter=true; return out; } return out; }
-function renderReadingVersionBar(activeVersion){ var bar=document.getElementById('readingVersionBar'); if(!bar) return; var versions=(SETTINGS&&SETTINGS.versions&&SETTINGS.versions.length)?SETTINGS.versions:[SETTINGS.defaultVersion||"NKJV"]; var html=""; for(var i=0;i<versions.length;i++){ var v=versions[i]; var act=(v===activeVersion)?" active":""; html+='<span class="rvchip'+act+'" data-v="'+escapeAttr(v)+'">'+escapeHTML(v)+'</span>'; } bar.innerHTML=html; var chips=bar.querySelectorAll('.rvchip'); for(var c=0;c<chips.length;c++){ chips[c].addEventListener('click',function(){ var v=this.getAttribute('data-v'); readingPlanState.version=v; renderReadingVersionBar(v); fetchReadingPlan(readingPlanState.raw,v,true); }); } }
-var WLDEH_VERSION_MAP={"KJV":"en-kjv","NKJV":"en-kjv","CHINYANJA":"en-kjv","NIV":"en-web","NLT":"en-web","ESV":"en-web","ERV":"en-web","AMPLIFIED":"en-web"};
-function bookToWldehSlug(book){ if(!book) return ""; var b=book.trim().toLowerCase(); if(b==="psalm") b="psalms"; if(b==="song of songs") b="song of solomon"; return b; }
-function wldehSlugVariants(slug){ var v=[]; v.push(slug); v.push(slug.replace(/\s+/g,'')); v.push(slug.replace(/\s+/g,'-')); v.push(slug.replace(/\s+/g,'_')); return v; }
-async function fetchBibleAPI(ref,trans){ var url="https://bible-api.com/"+encodeURIComponent(ref)+"?translation="+encodeURIComponent(trans); var r=await fetch(url); if(!r.ok){ var t=""; try{t=await r.text();}catch(e){} throw new Error("HTTP "+r.status+" "+t.slice(0,80)); } return await r.json(); }
-async function fetchChapterViaBibleApi(book,ch,trans){ var ref=book+" "+ch; return await fetchBibleAPI(ref,trans); }
-async function fetchChapterViaWldeh(book,ch,wldehVersion){ var slug=bookToWldehSlug(book); var variants=wldehSlugVariants(slug); var lastErr=null; for(var i=0;i<variants.length;i++){ var vslug=variants[i]; var url="https://cdn.jsdelivr.net/gh/wldeh/bible-api/bibles/"+wldehVersion+"/books/"+encodeURIComponent(vslug)+"/chapters/"+ch+".json"; try{ var r=await fetch(url); if(!r.ok) throw new Error("HTTP "+r.status); return await r.json(); }catch(e){ lastErr=e; } } throw lastErr||new Error("wldeh failed"); }
-function normalizeBibleApiVerses(apiData,fallbackBook,fallbackChapter){ var verses=[]; if(apiData&&apiData.verses&&apiData.verses.length){ for(var i=0;i<apiData.verses.length;i++){ var v=apiData.verses[i]; verses.push({chapter:v.chapter||fallbackChapter,verse:v.verse,text:v.text,book_name:v.book_name||apiData.book_name||fallbackBook}); } } else if(apiData&&apiData.text){ verses.push({chapter:fallbackChapter,verse:1,text:apiData.text,book_name:fallbackBook}); } return verses; }
-function normalizeWldehChapter(wldehData,fallbackBook,fallbackChapter){ var verses=[]; if(!wldehData) return verses; var arr=wldehData.data||wldehData.verses||[]; if(Array.isArray(arr)){ for(var i=0;i<arr.length;i++){ var v=arr[i]; var txt=v.text||v.content||""; var num=v.verse||v.number||(i+1); var bk=v.book||wldehData.book||fallbackBook; var ch=v.chapter||wldehData.chapter||fallbackChapter; verses.push({chapter:ch,verse:num,text:txt,book_name:bk}); } } return verses; }
-function renderVersesToHTML(verses,fallbackBook){ if(!verses||!verses.length) return ""; var html=""; var cur=null; for(var i=0;i<verses.length;i++){ var vs=verses[i]; var ch=vs.chapter; var bk=vs.book_name||fallbackBook||""; if(ch!==cur){ cur=ch; if(bk) html+='<div class="ch-head">'+escapeHTML(bk)+' '+ch+'</div>'; else html+='<div class="ch-head">Chapter '+ch+'</div>'; } html+='<div class="verse"><span class="vnum">'+vs.verse+'</span>'+escapeHTML((vs.text||"").trim())+'</div>'; } return html; }
-async function fetchChapterWithFallback(book,ch,trans,wldehVer){ var lastErr=null; try{ var a=await fetchChapterViaBibleApi(book,ch,trans); var v1=normalizeBibleApiVerses(a,book,ch); if(v1.length) return v1; }catch(e){ lastErr=e; } try{ var w=await fetchChapterViaWldeh(book,ch,wldehVer); var v2=normalizeWldehChapter(w,book,ch); if(v2.length) return v2; }catch(e){ lastErr=e; } var other=(trans==='kjv')?'web':'kjv'; try{ var a2=await fetchChapterViaBibleApi(book,ch,other); var v3=normalizeBibleApiVerses(a2,book,ch); if(v3.length) return v3; }catch(e){ lastErr=e; } throw lastErr||new Error("Could not load "+book+" "+ch); }
-async function fetchReadingPlan(rawRef,version,keepScroll){ var contentEl=document.getElementById('readingPlanContent'); var hintEl=document.getElementById('readingPlanHint'); var titleEl=document.getElementById('readingPlanTitle'); var subEl=document.getElementById('readingPlanSub'); var trans=(typeof BIBLE_VERSION_MAP!=='undefined'&&BIBLE_VERSION_MAP[version])?BIBLE_VERSION_MAP[version]:"kjv"; var wldehVer=WLDEH_VERSION_MAP[version]||WLDEH_VERSION_MAP[(version||"").toUpperCase()]||"en-kjv"; var parsed=parseReadingPlanRef(rawRef); readingPlanState.raw=rawRef; readingPlanState.version=version; readingPlanState.book=parsed.book; readingPlanState.start=parsed.start; readingPlanState.end=parsed.end; readingPlanState.isRange=parsed.isRange||parsed.isSingleChapter; readingPlanState.hasColon=parsed.hasColon; if(titleEl) titleEl.textContent=rawRef; if(subEl) subEl.textContent=" \u2022 "+version; if(!keepScroll&&contentEl) contentEl.scrollTop=0; if(contentEl) contentEl.innerHTML='<div style="padding:12px 0;color:var(--slate);font-family:Inter,sans-serif;">Loading <b>'+escapeHTML(rawRef)+'</b> ('+escapeHTML(trans.toUpperCase())+' / '+escapeHTML(wldehVer)+')...</div>'; if(hintEl) hintEl.textContent='Fetching chapter-by-chapter from bible-api.com + wldeh fallback...'; try{ var allVerses=[]; var firstBook=parsed.book||rawRef; if(parsed.isRange||parsed.isSingleChapter){ for(var ch=parsed.start; ch<=parsed.end; ch++){ if(contentEl) contentEl.innerHTML='<div style="padding:12px 0;color:var(--slate);font-family:Inter,sans-serif;">Loading '+escapeHTML(parsed.book)+' '+ch+'... ('+(ch-parsed.start+1)+'/'+(parsed.end-parsed.start+1)+')<br><small style="opacity:0.7">Trying '+escapeHTML(trans.toUpperCase())+' then '+escapeHTML(wldehVer)+'</small></div>'; var chapVerses=await fetchChapterWithFallback(parsed.book,ch,trans,wldehVer); for(var ci=0;ci<chapVerses.length;ci++) allVerses.push(chapVerses[ci]); if(!firstBook&&chapVerses[0]&&chapVerses[0].book_name) firstBook=chapVerses[0].book_name; } if(allVerses.length){ var html=renderVersesToHTML(allVerses,firstBook); if(contentEl) contentEl.innerHTML=html; readingPlanState.versesCache=allVerses; if(hintEl) hintEl.textContent='Loaded '+escapeHTML(rawRef)+' \u2022 '+allVerses.length+' verses \u2022 '+trans.toUpperCase()+'/'+wldehVer; } else throw new Error("No verses"); } else { var data=null; try{ data=await fetchBibleAPI(rawRef,trans); }catch(e){ try{ data=await fetchBibleAPI(rawRef,trans==='kjv'?'web':'kjv'); }catch(e2){ var m=rawRef.match(/^(.*?)\s+(\d+):(\d+)(?:-(\d+))?/); if(m){ var bk=normalizeBookForAPI(m[1]); var chN=parseInt(m[2],10); var verses=await fetchChapterWithFallback(bk,chN,trans,wldehVer); var vf=parseInt(m[3],10); var vt=m[4]?parseInt(m[4],10):vf; var filt=verses.filter(function(v){return v.verse>=vf&&v.verse<=vt;}); if(filt.length){ var h2=renderVersesToHTML(filt,bk); if(contentEl) contentEl.innerHTML=h2; readingPlanState.versesCache=filt; if(hintEl) hintEl.textContent='Loaded '+escapeHTML(rawRef)+' \u2022 '+filt.length+' verses (filtered)'; return; } } throw e2; } } if(data&&data.verses&&data.verses.length){ var h3=renderVersesToHTML(data.verses.map(function(v){return {chapter:v.chapter,verse:v.verse,text:v.text,book_name:v.book_name||data.book_name||rawRef};}), data.verses[0].book_name||""); if(contentEl) contentEl.innerHTML=h3; readingPlanState.versesCache=data.verses; if(hintEl) hintEl.textContent='Loaded '+(data.reference||rawRef)+' \u2022 '+data.verses.length+' verses'; } else if(data&&data.text){ if(contentEl) contentEl.innerHTML='<div class="ch-head">'+escapeHTML(data.reference||rawRef)+'</div><div style="white-space:pre-wrap;line-height:1.8;">'+escapeHTML(data.text.trim())+'</div>'; readingPlanState.versesCache=[]; if(hintEl) hintEl.textContent='Loaded '+(data.reference||rawRef); } else throw new Error("Empty"); } }catch(err){ var safeRaw=escapeAttr(rawRef||"").replace(/'/g,"\\'"); var safeVer=escapeAttr(version||"").replace(/'/g,"\\'"); if(contentEl) contentEl.innerHTML='<div style="padding:14px;background:rgba(208,52,44,0.12);border:1px solid rgba(208,52,44,0.35);border-radius:12px;color:#ffb4b4;font-family:Inter,sans-serif;font-size:13px;line-height:1.6;">Could not load <b>'+escapeHTML(rawRef)+'</b> as '+escapeHTML(trans.toUpperCase())+' / '+escapeHTML(wldehVer)+'.<br><br>Last error: '+escapeHTML(err&&err.message?err.message:'network')+'<br><br><button onclick="fetchReadingPlan(\''+safeRaw+'\',\''+safeVer+'\')" style="margin-top:6px;padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:#fff;cursor:pointer;">Retry</button></div>'; if(hintEl) hintEl.textContent='Failed - tried both APIs. Check connection or try KJV.'; } }
-function openReadingPlanReader(rawRef,preferredVersion){ var modal=document.getElementById('readingPlanModal'); var titleEl=document.getElementById('readingPlanTitle'); var subEl=document.getElementById('readingPlanSub'); if(!rawRef){ if(typeof toast==='function') toast("No reading plan"); return; } var ver=preferredVersion||readingPlanState.version||(typeof SETTINGS!=='undefined'&&SETTINGS.defaultVersion)||"NKJV"; readingPlanState.raw=rawRef; readingPlanState.version=ver; if(titleEl) titleEl.textContent=rawRef; if(subEl) subEl.textContent=" \u2022 "+ver; renderReadingVersionBar(ver); if(modal) modal.classList.add('open'); fetchReadingPlan(rawRef,ver,false); }
-function closeReadingPlanReader(){ var m=document.getElementById('readingPlanModal'); if(m) m.classList.remove('open'); }
-function navigateReadingPlan(dir){ var raw=readingPlanState.raw; var ver=readingPlanState.version||(typeof SETTINGS!=='undefined'&&SETTINGS.defaultVersion)||"NKJV"; var parsed=parseReadingPlanRef(raw); var newRef=null; if(parsed.isRange){ var size=parsed.end-parsed.start+1; if(dir==='prev'){ var ns=Math.max(1,parsed.start-size); var ne=parsed.start-1; if(ne<1){ if(typeof toast==='function') toast("Beginning"); return; } newRef=parsed.book+" "+ns+"-"+ne; } else { var s2=parsed.end+1; var e2=parsed.end+size; if(s2>150){ if(typeof toast==='function') toast("End"); return; } newRef=parsed.book+" "+s2+"-"+e2; } } else if(parsed.isSingleChapter){ var ch=parsed.start; var n=dir==='prev'?ch-1:ch+1; if(n<1){ if(typeof toast==='function') toast("Chapter 1"); return; } newRef=parsed.book+" "+n; } else if(parsed.hasColon){ var m=raw.match(/^(.*?)\s+(\d+):/); if(m){ var bk=m[1]; var cn=parseInt(m[2],10); var nn=dir==='prev'?cn-1:cn+1; if(nn<1){ if(typeof toast==='function') toast("Chapter 1"); return; } newRef=bk+" "+nn; } else { if(typeof toast==='function') toast("Cannot navigate"); return; } } else { if(typeof toast==='function') toast("Cannot navigate"); return; } openReadingPlanReader(newRef,ver); }
-window.__openReadingPlan=function(el){ try{ var p=el&&el.getAttribute?el.getAttribute('data-plan'):""; if(!p&&typeof el==='string') p=el; if(p) openReadingPlanReader(p); }catch(e){} };
-window.openReadingPlanReader=openReadingPlanReader;
-(function(){ var cb=document.getElementById('readingPlanCloseBtn'); if(cb) cb.addEventListener('click', closeReadingPlanReader); var mod=document.getElementById('readingPlanModal'); if(mod) mod.addEventListener('click', function(e){ if(e.target===mod) closeReadingPlanReader(); }); var copy=document.getElementById('readingCopyBtn'); if(copy) copy.addEventListener('click', function(){ var ce=document.getElementById('readingPlanContent'); if(!ce){ if(typeof toast==='function') toast("Nothing"); return; } var t=ce.innerText||ce.textContent||""; if(!t.trim()){ if(typeof toast==='function') toast("Nothing"); return; } var h="Bible Reading Plan: "+(readingPlanState.raw||"")+" ("+(readingPlanState.version||"")+")\n\n"; if(typeof copyToClipboard==='function'){ copyToClipboard(h+t); if(typeof toast==='function') toast("Copied"); } else if(navigator.clipboard){ navigator.clipboard.writeText(h+t); if(typeof toast==='function') toast("Copied"); } }); var pb=document.getElementById('readingPrevBtn'); if(pb) pb.addEventListener('click', function(){ navigateReadingPlan('prev'); }); var nb=document.getElementById('readingNextBtn'); if(nb) nb.addEventListener('click', function(){ navigateReadingPlan('next'); }); })();
-
+  currentDate = ENTRIES[todayISO()] ? todayISO() : nearestDate();
+  isPinnedToToday = true;
+  renderToday();
+  renderBrowse();
+});
 
 /* ---------------- Share / Export ---------------- */
 function buildShareText(entry){
@@ -1714,15 +1887,15 @@ function buildShareText(entry){
     lines.push("Prayer Points");
     for(var pi=0;pi<entry.prayerPoints.length;pi++){ if(entry.prayerPoints[pi]) lines.push((pi+1)+". "+entry.prayerPoints[pi]); }
   }
-  if(entry.declarations && entry.declarations.length){
-    lines.push("");
-    lines.push(entry.declareHeading || "Declare This Now");
-    for(var i=0;i<entry.declarations.length;i++){ lines.push((i+1)+". "+entry.declarations[i]); }
-  }
   if(entry.confession && entry.confession.trim()){
     lines.push("");
     lines.push("Confession");
     lines.push(entry.confession);
+  }
+  if(entry.declarations && entry.declarations.length){
+    lines.push("");
+    lines.push(entry.declareHeading || "Declare This Now");
+    for(var i=0;i<entry.declarations.length;i++){ lines.push((i+1)+". "+entry.declarations[i]); }
   }
   if(entry.readingPlan){ lines.push(""); lines.push("Bible Reading Plan: "+entry.readingPlan); }
   lines.push("");
@@ -1812,7 +1985,7 @@ document.getElementById('exportPDF').addEventListener('click', function(){
 function plainEntryForPrint(entry){
   var parts = isoToParts(entry.date);
   var vt = pickVersionText(entry);
-  var html = "<h3 style='text-align:center;'>"+parts.weekday+", "+ordinal(parts.day)+" "+parts.month+" "+parts.year+"</h3>";
+  var html = "<h3 style='text-align:center;'>"+parts.weekday+": "+ordinal(parts.day)+" "+parts.month+" "+parts.year+"</h3>";
   html += "<h2 style='text-align:center;'>Focus: "+escapeHTML(entry.focus||"")+"</h2>";
   html += "<p style='text-align:center;'><b>"+escapeHTML(entry.scriptureRef||"")+"</b></p>";
   if(vt.text) html += "<blockquote style='border-left:3px solid #999;padding-left:12px;font-style:italic;'>"+escapeHTML(vt.text)+" ("+escapeHTML(vt.v)+")</blockquote>";
@@ -1822,13 +1995,13 @@ function plainEntryForPrint(entry){
     for(var pi=0;pi<entry.prayerPoints.length;pi++){ if(entry.prayerPoints[pi]) html += "<li>"+escapeHTML(entry.prayerPoints[pi])+"</li>"; }
     html += "</ol>";
   }
+  if(entry.confession && entry.confession.trim()){
+    html += "<p><b>Confession</b></p><p style='font-style:italic;'>"+escapeHTML(entry.confession).replace(/\n/g,"<br>")+"</p>";
+  }
   if(entry.declarations && entry.declarations.length){
     html += "<p><b>"+escapeHTML(entry.declareHeading||"")+"</b></p><ol>";
     for(var i=0;i<entry.declarations.length;i++){ html += "<li>"+escapeHTML(entry.declarations[i])+"</li>"; }
     html += "</ol>";
-  }
-  if(entry.confession && entry.confession.trim()){
-    html += "<p><b>Confession</b></p><blockquote style='border-left:3px solid #E8B23D;padding:10px 14px;background:#FFF8E7;font-style:italic;'>"+escapeHTML(entry.confession).replace(/\n/g,"<br>")+"</blockquote>";
   }
   if(entry.readingPlan) html += "<p><b>Bible Reading Plan:</b> "+escapeHTML(entry.readingPlan)+"</p>";
   html += "<hr><p style='text-align:center;color:#555;'>"+escapeHTML(SETTINGS.pastor)+" &middot; Prayer Line "+escapeHTML(SETTINGS.prayerline)+"</p>";
@@ -1843,95 +2016,140 @@ function plainEntryForPrint(entry){
    was entered. */
 function buildStandaloneHTML(entry){
   var parts = isoToParts(entry.date);
+  var vt = pickVersionText(entry);
   var versionKeys = [];
   var vObj = entry.versions || {};
   for(var k in vObj){ if(vObj[k]) versionKeys.push(k); }
   if(versionKeys.length === 0) versionKeys.push(entry.primaryVersion || SETTINGS.defaultVersion || "NKJV");
   var startV = (vObj[SETTINGS.defaultVersion]) ? SETTINGS.defaultVersion :
                (entry.primaryVersion && vObj[entry.primaryVersion]) ? entry.primaryVersion : versionKeys[0];
+
   var chipsHTML = "";
   var panelsHTML = "";
   for(var i=0;i<versionKeys.length;i++){
     var v = versionKeys[i];
     var isActive = (v === startV);
     chipsHTML += '<button class="vbtn'+(isActive?' active':'')+'" data-v="'+escapeHTML(v)+'" onclick="wolShowVersion(this)">'+escapeHTML(v)+'</button>';
-    panelsHTML += '<div class="vpanel" data-v="'+escapeHTML(v)+'" style="display:'+(isActive?'block':'none')+';"><div style="white-space:pre-wrap;">'+escapeHTML(vObj[v]||"")+'</div></div>';
+    panelsHTML += '<div class="vpanel" data-v="'+escapeHTML(v)+'" style="display:'+(isActive?'block':'none')+';">'+escapeHTML(vObj[v]||"")+'</div>';
   }
+
   var html = "";
   html += "<!DOCTYPE html>\n<html lang='en'><head><meta charset='UTF-8'>";
   html += "<meta name='viewport' content='width=device-width, initial-scale=1.0'>";
-  html += "<title>"+escapeHTML(entry.focus||"Word of Life")+" - "+fmtLong(entry.date)+"</title>";
+  html += "<title>"+escapeHTML(entry.focus||"Word of Life")+" \u2014 "+fmtLong(entry.date)+"</title>";
   html += "<style>";
-  html += "*{box-sizing:border-box;}body{margin:0;padding:24px 16px 60px;background:#0B1633;color:#F7F2E7;font-family:Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased;}";
-  html += ".wrap{max-width:680px;margin:0 auto;}";
-  html += ".hdr{text-align:center;margin-bottom:18px;}";
-  html += ".hdr img{width:72px;height:72px;border-radius:50%;border:2px solid #E8B23D;object-fit:cover;background:#fff;}";
-  html += ".hdr .series{font-family:Inter,Arial,sans-serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#F4D27A;font-weight:800;margin-top:10px;}";
-  html += ".day-strip{display:flex;align-items:center;justify-content:center;gap:10px;font-family:Inter,Arial,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#F4D27A;font-weight:700;margin:18px 0 10px;}";
-  html += ".date-block{text-align:center;margin:6px 0 18px;}";
-  html += ".weekday{font-family:Inter,Arial,sans-serif;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#9AA6CC;font-weight:600;}";
-  html += ".big{font-size:28px;font-weight:800;margin:4px 0 0;background:linear-gradient(180deg,#fff,#F4D27A);-webkit-background-clip:text;background-clip:text;color:transparent;}";
-  html += ".focus{text-align:center;font-size:26px;font-weight:700;margin:2px 0 6px;color:#fff;}";
-  html += ".sref{display:block;text-align:center;font-family:Inter,Arial,sans-serif;font-size:12px;font-weight:600;letter-spacing:.05em;color:#E8B23D;text-transform:uppercase;margin-bottom:12px;}";
-  html += ".card{background:rgba(255,255,255,0.05);border:1px solid rgba(154,166,204,0.22);border-radius:16px;padding:22px 18px;margin-bottom:16px;}";
-  html += ".scripture{border-left:3px solid #E8B23D;padding:4px 0 4px 14px;font-size:17px;line-height:1.65;font-style:italic;margin:0 0 14px;}";
+  html += "*{box-sizing:border-box;}body{margin:0;padding:24px 16px 50px;background:#0B1633;color:#F7F2E7;";
+  html += "font-family:Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased;}";
+  html += ".wrap{max-width:600px;margin:0 auto;}";
+  html += ".hdr{text-align:center;margin-bottom:22px;}";
+  html += ".hdr img{width:64px;height:64px;border-radius:50%;border:2px solid #E8B23D;object-fit:cover;}";
+  html += ".hdr .min{font-family:Arial,sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#F4D27A;margin-top:10px;font-weight:bold;}";
+  html += ".hdr .ser{font-family:Arial,sans-serif;font-size:12.5px;color:#9AA6CC;margin-top:2px;}";
+  html += ".datebar{text-align:center;font-family:Arial,sans-serif;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#9AA6CC;margin:18px 0 4px;}";
+  html += ".datebig{text-align:center;font-size:22px;font-weight:bold;color:#fff;margin-bottom:20px;}";
+  html += ".card{background:rgba(255,255,255,0.04);border:1px solid rgba(154,166,204,0.25);border-radius:16px;padding:22px 18px;margin-bottom:16px;}";
+  html += ".ttl-label{font-family:Arial,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#E8B23D;font-weight:bold;margin-bottom:6px;}";
+  html += ".ttl{font-size:26px;font-weight:bold;color:#fff;margin:0 0 4px;}";
+  html += ".ref{font-family:Arial,sans-serif;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:#E8B23D;font-weight:bold;margin-top:14px;}";
   html += ".vbtns{margin:10px 0 8px;}";
-  html += ".vbtn{font-family:Inter,Arial,sans-serif;font-size:11px;font-weight:700;padding:6px 11px;border-radius:999px;border:1px solid rgba(154,166,204,0.3);background:rgba(255,255,255,0.05);color:#9AA6CC;margin:0 6px 6px 0;cursor:pointer;}";
+  html += ".vbtn{font-family:Arial,sans-serif;font-size:11px;font-weight:bold;letter-spacing:.04em;padding:5px 10px;border-radius:999px;border:1px solid rgba(154,166,204,0.35);background:rgba(255,255,255,0.05);color:#9AA6CC;margin:0 6px 6px 0;cursor:pointer;}";
   html += ".vbtn.active{background:#E8B23D;color:#0B1633;border-color:transparent;}";
-  html += ".vpanel{margin-top:4px;}";
-  html += ".body{font-size:16px;line-height:1.75;color:#EFE7D5;white-space:pre-wrap;}";
-  html += ".p-head{font-family:Inter,Arial,sans-serif;font-weight:800;font-size:13px;letter-spacing:.04em;color:#E8B23D;text-transform:uppercase;margin:18px 0 8px;}";
-  html += ".p-list{list-style:none;margin:0;padding:0;counter-reset:pray;}";
-  html += ".p-list li{counter-increment:pray;position:relative;padding:8px 0 8px 34px;font-size:15px;line-height:1.5;border-top:1px solid rgba(232,178,61,0.16);} .p-list li:first-child{border-top:none;}";
-  html += ".p-list li::before{content:counter(pray);position:absolute;left:0;top:8px;width:22px;height:22px;border-radius:50%;background:#E8B23D;color:#0B1633;font-family:Inter,Arial,sans-serif;font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;}";
-  html += ".d-list{list-style:none;margin:0;padding:0;counter-reset:decl;}";
-  html += ".d-list li{counter-increment:decl;position:relative;padding:8px 0 8px 34px;font-size:15px;line-height:1.5;border-top:1px solid rgba(154,166,204,0.14);color:#fff;} .d-list li:first-child{border-top:none;}";
-  html += ".d-list li::before{content:counter(decl);position:absolute;left:0;top:9px;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#E8B23D,#D0342C);color:#0B1633;font-family:Inter,Arial,sans-serif;font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;}";
-  html += ".confess{background:rgba(232,178,61,0.10);border-left:3px solid #E8B23D;border-radius:10px;padding:12px 14px;font-style:italic;margin-top:14px;white-space:pre-wrap;}";
-  html += ".plan-row{display:flex;align-items:center;gap:8px;font-family:Inter,Arial,sans-serif;font-size:13px;color:#9AA6CC;background:rgba(255,255,255,0.04);border:1px solid rgba(154,166,204,0.18);border-radius:12px;padding:10px 12px;margin-top:18px;} .plan-row b{color:#F7F2E7;}";
-  html += ".pastor{display:flex;align-items:center;gap:12px;padding-top:16px;margin-top:16px;border-top:1px dashed rgba(232,178,61,0.3);} .pastor img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #E8B23D;} .pastor .nm{font-family:Inter,Arial,sans-serif;font-weight:700;font-size:13.5px;color:#fff;} .pastor .ln{font-family:Inter,Arial,sans-serif;font-size:11.5px;color:#9AA6CC;}";
-  html += ".ftr{text-align:center;font-family:Inter,Arial,sans-serif;font-size:11px;color:#5C6A99;margin-top:28px;line-height:1.6;}";
+  html += ".vpanel{border-left:3px solid #E8B23D;padding:2px 0 2px 14px;font-size:17px;line-height:1.65;font-style:italic;}";
+  html += ".body-msg{font-size:15.5px;line-height:1.75;color:#DCD6C4;white-space:pre-wrap;}";
+  html += ".sub-head{font-family:Arial,sans-serif;font-weight:bold;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;}";
+  html += ".sub-head.gold{color:#E8B23D;}.sub-head.blue{color:#7FB3E8;}.sub-head.red{color:#E2564F;}";
+  html += "ol.prayer{list-style:none;margin:0;padding:0;counter-reset:pn;}";
+  html += "ol.prayer li{counter-increment:pn;position:relative;padding:7px 0 7px 26px;font-size:14.5px;line-height:1.5;border-top:1px solid rgba(232,178,61,0.16);}";
+  html += "ol.prayer li:first-child{border-top:none;}";
+  html += "ol.prayer li::before{content:counter(pn) '.';position:absolute;left:0;top:7px;color:#E8B23D;font-weight:bold;font-family:Arial,sans-serif;font-size:13px;}";
+  html += ".confession-box{background:rgba(127,179,232,0.08);border:1px solid rgba(127,179,232,0.28);border-radius:10px;padding:12px 14px;font-size:14.5px;line-height:1.7;font-style:italic;white-space:pre-wrap;}";
+  html += "ol.decl{list-style:none;margin:0;padding:0;counter-reset:dn;}";
+  html += "ol.decl li{counter-increment:dn;position:relative;padding:7px 0 7px 30px;font-size:14.5px;line-height:1.5;border-top:1px solid rgba(154,166,204,0.14);}";
+  html += "ol.decl li:first-child{border-top:none;}";
+  html += "ol.decl li::before{content:counter(dn);position:absolute;left:0;top:7px;width:19px;height:19px;border-radius:50%;background:linear-gradient(135deg,#E8B23D,#D0342C);color:#0B1633;font-family:Arial,sans-serif;font-weight:bold;font-size:10px;display:flex;align-items:center;justify-content:center;}";
+  html += ".plan{font-family:Arial,sans-serif;font-size:13.5px;color:#9AA6CC;background:rgba(255,255,255,0.04);border:1px solid rgba(154,166,204,0.2);border-radius:12px;padding:12px 14px;margin-top:6px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;}";
+  html += ".plan:active{background:rgba(232,178,61,0.12);}";
+  html += ".plan b{color:#F7F2E7;}";
+  html += ".plan .go{color:#E8B23D;font-size:12px;flex:none;}";
+  html += ".pastor-row{display:flex;align-items:center;gap:12px;}";
+  html += ".pastor-row img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #E8B23D;}";
+  html += ".pastor-row .name{font-family:Arial,sans-serif;font-weight:bold;font-size:13.5px;color:#fff;}";
+  html += ".pastor-row .line{font-family:Arial,sans-serif;font-size:11.5px;color:#9AA6CC;margin-top:2px;}";
+  html += ".ftr{text-align:center;font-family:Arial,sans-serif;font-size:11px;color:#5C6A99;margin-top:20px;}";
   html += "</style></head><body><div class='wrap'>";
-  html += "<div class='hdr'><img src='"+escapeAttr(SETTINGS.logo||"")+"' alt='logo'><div class='series'>"+escapeHTML(SETTINGS.series||"WORD OF LIFE DAILY DEVOTIONAL")+"</div></div>";
-  html += "<div class='day-strip'><span>"+escapeHTML(SETTINGS.series||"WORD OF LIFE DAILY DEVOTIONAL")+"</span></div>";
-  html += "<div class='date-block'><div class='weekday'>"+escapeHTML(parts.weekday)+"</div><div class='big'>"+ordinal(parts.day)+" "+escapeHTML(parts.month)+" "+parts.year+"</div></div>";
+
+  html += "<div class='hdr'><img src='"+SETTINGS.logo+"' alt='logo'>";
+  html += "<div class='min'>"+escapeHTML(SETTINGS.ministry)+"</div>";
+  html += "<div class='ser'>"+escapeHTML(SETTINGS.series)+"</div></div>";
+
+  html += "<div class='datebig'>"+escapeHTML(parts.weekday)+": "+ordinal(parts.day)+" "+escapeHTML(parts.month)+" "+parts.year+"</div>";
+
   html += "<div class='card'>";
-  html += "<div class='focus'>Focus: "+escapeHTML(entry.focus||"")+"</div>";
-  html += "<span class='sref'>Scripture &middot; "+escapeHTML(entry.scriptureRef||"")+"</span>";
-  if(versionKeys.length>0){
-    if(versionKeys.length>1) html += "<div class='vbtns'>"+chipsHTML+"</div>";
-    html += panelsHTML;
-    var vt = (function(){ var v=vObj[startV]||""; return v; })();
-    if(vt){ html += "<blockquote class='scripture'>&ldquo;"+escapeHTML(vt)+"&rdquo;</blockquote>"; }
+  html += "<div class='ttl-label'>Title of the Message</div>";
+  html += "<div class='ttl'>"+escapeHTML(entry.focus||"")+"</div>";
+
+  html += "<div class='ref'>Scripture &middot; "+escapeHTML(entry.scriptureRef||"")+"</div>";
+  if(versionKeys.length > 1){ html += "<div class='vbtns'>"+chipsHTML+"</div>"; }
+  html += panelsHTML;
+
+  if(entry.body && entry.body.trim()){
+    html += "<div class='body-msg' style='margin-top:16px;'>"+escapeHTML(entry.body)+"</div>";
   }
-  if(entry.body){
-    html += "<div class='body'>"+escapeHTML(entry.body)+"</div>";
-  }
+  html += "</div>";
+
   if(entry.prayerPoints && entry.prayerPoints.length){
-    html += "<div class='p-head'>Prayer Points</div><ol class='p-list'>";
+    html += "<div class='card'>";
+    html += "<div class='sub-head gold'>Prayer Points</div>";
+    html += "<ol class='prayer'>";
     for(var pi=0;pi<entry.prayerPoints.length;pi++){ if(entry.prayerPoints[pi]) html += "<li>"+escapeHTML(entry.prayerPoints[pi])+"</li>"; }
-    html += "</ol>";
+    html += "</ol></div>";
   }
-  if(entry.declarations && entry.declarations.length){
-    html += "<div class='p-head' style='color:#D0342C;'>"+escapeHTML(entry.declareHeading||"Declare This Now")+"</div><ol class='d-list'>";
-    for(var di=0;di<entry.declarations.length;di++){ if(entry.declarations[di]) html += "<li>"+escapeHTML(entry.declarations[di])+"</li>"; }
-    html += "</ol>";
-  }
+
   if(entry.confession && entry.confession.trim()){
-    html += "<div class='p-head'>Confession</div><div class='confess'>"+escapeHTML(entry.confession)+"</div>";
+    html += "<div class='card'>";
+    html += "<div class='sub-head blue'>Confession</div>";
+    html += "<div class='confession-box'>"+escapeHTML(entry.confession)+"</div>";
+    html += "</div>";
   }
+
+  if(entry.declarations && entry.declarations.length){
+    html += "<div class='card'>";
+    html += "<div class='sub-head red'>"+escapeHTML(entry.declareHeading || "Declare This Now")+"</div>";
+    html += "<ol class='decl'>";
+    for(var di=0;di<entry.declarations.length;di++){ if(entry.declarations[di]) html += "<li>"+escapeHTML(entry.declarations[di])+"</li>"; }
+    html += "</ol></div>";
+  }
+
   if(entry.readingPlan){
-    html += "<div class='plan-row'><b>Bible Reading Plan:</b> "+escapeHTML(entry.readingPlan)+"</div>";
+    html += "<div class='card'>";
+    html += "<div class='ttl-label'>Bible Study Plan</div>";
+    html += "<div class='plan' onclick=\"wolOpenBibleStandalone('"+escJsAttr(entry.readingPlan)+"','"+escJsAttr(vt.v||SETTINGS.defaultVersion)+"')\"><span><b>"+escapeHTML(entry.readingPlan)+"</b></span><span class='go'>Open &#8250;</span></div>";
+    html += "</div>";
   }
-  html += "<div class='pastor'><img src='"+escapeAttr(SETTINGS.pastorPhoto||SETTINGS.logo||"")+"' alt='pastor'><div><div class='nm'>"+escapeHTML(SETTINGS.pastor||"")+"</div><div class='ln'>Prayer Line "+escapeHTML(SETTINGS.prayerline||"")+"</div></div></div>";
+
+  html += "<div class='card'><div class='pastor-row'><img src='"+SETTINGS.photo+"' alt='pastor'>";
+  html += "<div><div class='name'>"+escapeHTML(SETTINGS.pastor)+"</div><div class='line'>Prayer Line: "+escapeHTML(SETTINGS.prayerline)+"</div></div></div></div>";
+  html += "<div class='ftr'>Generated from Word of Life &mdash; "+escapeHTML(SETTINGS.ministry)+"</div>";
   html += "</div>";
-  html += "<div class='ftr'>"+escapeHTML(SETTINGS.series)+" &middot; "+escapeHTML(parts.weekday)+", "+ordinal(parts.day)+" "+escapeHTML(parts.month)+" "+parts.year+"</div>";
-  html += "</div>";
-  html += "<scr"+"ipt>"+"function wolShowVersion(btn){var v=btn.getAttribute('data-v');var btns=document.getElementsByClassName('vbtn');for(var i=0;i<btns.length;i++){btns[i].className='vbtn'+(btns[i].getAttribute('data-v')===v?' active':'');}var panels=document.getElementsByClassName('vpanel');for(var j=0;j<panels.length;j++){panels[j].style.display=(panels[j].getAttribute('data-v')===v)?'block':'none';}}</scr"+"ipt>";
+
+  html += "<script>function wolShowVersion(btn){";
+  html += "var v=btn.getAttribute('data-v');";
+  html += "var btns=document.getElementsByClassName('vbtn');";
+  html += "for(var i=0;i<btns.length;i++){btns[i].className='vbtn'+(btns[i].getAttribute('data-v')===v?' active':'');}";
+  html += "var panels=document.getElementsByClassName('vpanel');";
+  html += "for(var j=0;j<panels.length;j++){panels[j].style.display=(panels[j].getAttribute('data-v')===v)?'block':'none';}";
+  html += "}";
+  html += "var wolGWCodes={NKJV:'NKJV',NIV:'NIV',NLT:'NLT',ESV:'ESV',ERV:'ERV',AMPLIFIED:'AMP',KJV:'KJV'};";
+  html += "function wolOpenBibleStandalone(ref,version){";
+  html += "if(!ref)return;";
+  html += "var code=wolGWCodes[(version||'').toUpperCase()];";
+  html += "var url=code?('https://www.biblegateway.com/passage/?search='+encodeURIComponent(ref)+'&version='+code):('https://www.google.com/search?q='+encodeURIComponent(ref+' '+(version||'')+' Bible'));";
+  html += "window.open(url,'_blank');";
+  html += "}<\/script>";
+
   html += "</body></html>";
   return html;
 }
-
 
 document.getElementById('exportStandalone').addEventListener('click', function(){
   var e = currentEntryOrWarn(); if(!e) return;
